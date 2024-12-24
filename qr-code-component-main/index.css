@@ -54,7 +54,7 @@ body {
     }
   }
 
-  p {
+  h2 {
     text-align: center;
     color: var(--slate-900);
     font-size: var(--font-size-regular);
@@ -62,6 +62,7 @@ body {
 
   p.small {
     margin-top: 0;
+    text-align: center;
     color: var(--slate-500);
     font-size: var(--font-size-small);
   }

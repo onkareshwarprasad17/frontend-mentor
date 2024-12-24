@@ -6,6 +6,7 @@ This is a solution to the [QR code component challenge on Frontend Mentor](https
 
 - [Overview](#overview)
   - [Screenshot](#screenshot)
+  - [Links](#links)
 - [My process](#my-process)
   - [Built with](#built-with)
   - [What I learned](#what-i-learned)
@@ -20,6 +21,11 @@ This is a solution to the [QR code component challenge on Frontend Mentor](https
 
 ![](./images/result-desktop.png)
 
+### Links
+
+- Solution URL:- https://www.frontendmentor.io/solutions/qr-code-component-ublh60IVM0
+- Live URL:- https://qrcode-cmp.netlify.app/
+
 ## My process
 
 ### Built with
@@ -30,7 +36,7 @@ This is a solution to the [QR code component challenge on Frontend Mentor](https
 
 ### What I learned
 
-To make the parent responsive as per it's children dimensions, we can give ```css width: 'fit-content``` and specify the required dimensions of the children eg. image element.
+To make the parent responsive as per it's children dimensions, we can give `css width: 'fit-content` and specify the required dimensions of the children eg. image element.
 
 ### Useful resources
 

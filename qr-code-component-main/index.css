@@ -54,7 +54,7 @@ body {
     }
   }
 
-  h2 {
+  h1 {
     text-align: center;
     color: var(--slate-900);
     font-size: var(--font-size-regular);

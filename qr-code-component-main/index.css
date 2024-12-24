@@ -1,0 +1,68 @@
+:root {
+  --white-color: hsl(0, 0%, 100%);
+  --slate-300: hsl(212, 45%, 89%);
+  --slate-500: hsl(216, 15%, 48%);
+  --slate-900: hsl(218, 44%, 22%);
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --font-size-regular: 15px;
+  --font-size-small: 11px;
+  --image-dimension: 12rem;
+  font-family: "Outfit", serif;
+  font-style: normal;
+  font-optical-sizing: auto;
+  background-color: var(--slate-300);
+}
+
+body {
+  margin: auto;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.body-copy-regular {
+  font-weight: var(--font-weight-regular);
+}
+
+.bold {
+  font-weight: var(--font-weight-bold);
+}
+
+.container {
+  width: fit-content;
+  background-color: var(--white-color);
+  padding: 12px;
+  border-radius: 1rem;
+  box-shadow: var(--slate-300) 0px 7px 29px 0px;
+}
+
+.inner-container {
+  display: flex;
+  flex-direction: column;
+  width: var(--image-dimension);
+
+  div {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    /* height: var(--image-dimension); */
+
+    img {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  p {
+    text-align: center;
+    color: var(--slate-900);
+    font-size: var(--font-size-regular);
+  }
+
+  p.small {
+    margin-top: 0;
+    color: var(--slate-500);
+    font-size: var(--font-size-small);
+  }
+}

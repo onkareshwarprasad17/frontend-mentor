@@ -7,6 +7,7 @@ This is a solution to the [Blog preview card challenge on Frontend Mentor](https
 - [Overview](#overview)
   - [The challenge](#the-challenge)
   - [Screenshot](#screenshot)
+  - [Links](#links)
 - [My process](#my-process)
   - [Built with](#built-with)
   - [What I learned](#what-i-learned)
@@ -25,6 +26,11 @@ Users should be able to:
 ### Screenshot
 
 ![](./assets/images/result.png)
+
+### Links
+
+- Solution URL - https://www.frontendmentor.io/solutions/blog-preview-card-using-flexbox-and-local-font-files-crjh5K8nAP
+- Live URL - https://blogpreviewcard-fem.netlify.app/
 
 ## My process
 

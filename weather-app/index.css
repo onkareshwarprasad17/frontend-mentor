@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  /* container dimensions */
+  --container-8xl: 90rem;
+
+  /* colors */
+  --color-neutral-900: hsl(243, 96%, 9%);
+  --color-neutral-800: hsl(243, 27%, 20%);
+  --color-neutral-700: hsl(243, 23%, 24%);
+  --color-neutral-600: hsl(243, 23%, 30%);
+  --color-neutral-300: hsl(240, 6%, 70%);
+  --color-neutral-200: hsl(250, 6%, 84%);
+  --color-neutral-0: hsl(0, 0%, 100%);
+  --color-orange-500: hsl(28, 100%, 52%);
+  --color-blue-500: hsl(233, 67%, 56%);
+  --color-blue-700: hsl(248, 70%, 36%);
+}
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+.class-hello {
+  background-color: red;
+}

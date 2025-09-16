@@ -29,6 +29,10 @@
   height: 100vh;
 }
 
+body {
+  @apply bg-neutral-900 text-neutral-0;
+}
+
 .class-hello {
   background-color: red;
 }

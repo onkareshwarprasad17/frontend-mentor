@@ -4,17 +4,42 @@ type ButtonProps = {
   className?: string
   icon?: string
   isDropdown?: boolean
-  variant?: 'primary' | 'secondary'
+  variant?: 'primary' | 'secondary' | 'custom'
+  variantColor?: string
 }
 
-const Button = ({ icon, className, label, isDropdown, variant = 'secondary' }: ButtonProps) => {
+const Button = ({
+  icon,
+  className,
+  label,
+  isDropdown,
+  variant = 'secondary',
+  variantColor,
+}: ButtonProps) => {
   // should close the dropdown when clicked outside
   const renderIcon = () => {
     return <img src={icon} className='h-3.5 w-3.5 md:w-4 md:h-4' />
   }
+
+  let variantColorClass = ''
+
+  switch (variant) {
+    case 'primary':
+      variantColorClass = 'bg-blue-500'
+      break
+
+    case 'secondary':
+      variantColorClass = 'bg-gray-800'
+      break
+
+    case 'custom':
+      variantColorClass = variantColor || ''
+      break
+  }
+
   return (
     <button
-      className={`flex gap-1.5 md:gap-2.5 items-center justify-center rounded-md font-dm-sans font-medium text-neutral-0 leading-[120%] ${variant === 'secondary' ? 'bg-neutral-800' : 'bg-blue-500'} ${className ? className : ''} `}
+      className={`flex gap-1.5 md:gap-2.5 items-center justify-center rounded-md font-dm-sans font-medium text-neutral-0 leading-[120%] cursor-pointer ${variantColorClass} ${className ? className : ''} `}
     >
       {icon && renderIcon()}
       {label}

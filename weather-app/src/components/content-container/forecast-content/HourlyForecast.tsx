@@ -47,7 +47,7 @@ const HourlyForecast = () => {
   return (
     <div
       data-testid='right-hourly-forecast'
-      className='border-2 border-green-300 border-solid flex flex-col xl:max-w-96 w-full p-5 md:p-6 bg-neutral-800 rounded-[1.25rem] gap-4'
+      className='flex flex-col xl:max-w-96 w-full p-5 md:p-6 bg-neutral-800 rounded-[1.25rem] gap-4'
     >
       {/* Header */}
       <div className='flex justify-between items-center'>

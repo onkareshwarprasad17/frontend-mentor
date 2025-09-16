@@ -4,7 +4,7 @@ import WeatherInfoContainer from './WeatherInfoContainer'
 const LeftContent = () => {
   return (
     <div
-      className='gap-5 sm:gap-8 flex flex-col xl:max-w-[800px] w-full'
+      className='gap-8 lg:gap-12 flex flex-col xl:max-w-[800px] w-full'
       data-testid='left-content'
     >
       <WeatherInfoContainer />

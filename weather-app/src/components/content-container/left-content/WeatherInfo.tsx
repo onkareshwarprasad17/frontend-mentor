@@ -20,7 +20,7 @@ const WeatherInfo = () => {
         <div className='flex items-center max-md:justify-center gap-5 max-md:-top-[2.6rem] relative'>
           <img
             src='/assets/images/icon-sunny.webp'
-            alt='temperature icon'
+            alt='temperature-icon'
             className='w-[7.5rem] h-[7.5rem]'
           />
           <p className='font-dm-sans font-semibold italic leading-none -tracking-[2px] text-8xl'>

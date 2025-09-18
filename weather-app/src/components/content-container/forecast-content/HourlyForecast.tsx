@@ -54,7 +54,7 @@ const HourlyForecast = () => {
         <p className='font-dm-sans font-semibold text-xl leading-[120%]'>Hourly forecast</p>
         <Button
           label='Tuesday'
-          icon='/public/assets/images/icon-units.svg'
+          icon='/assets/images/icon-units.svg'
           className='py-2 px-2.5 md:py-3 md:px-4 text-sm md:text-base'
           isDropdown={true}
           variant='custom'

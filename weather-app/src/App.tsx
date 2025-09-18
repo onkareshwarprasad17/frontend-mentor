@@ -10,7 +10,7 @@ function App() {
         How's the sky looking today?
       </h1>
 
-      <main className='flex flex-col md:gap-12 max-md:gap-8 items-center'>
+      <main className='flex flex-col lg:gap-12 gap-8 items-center'>
         <SearchContainer />
         <ContentContainer />
       </main>

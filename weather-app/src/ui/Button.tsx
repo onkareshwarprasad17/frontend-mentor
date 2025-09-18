@@ -18,7 +18,7 @@ const Button = ({
 }: ButtonProps) => {
   // should close the dropdown when clicked outside
   const renderIcon = () => {
-    return <img src={icon} className='h-3.5 w-3.5 md:w-4 md:h-4' />
+    return <img src={icon} className='h-3.5 w-3.5 md:w-4 md:h-4' alt='button-icon' />
   }
 
   let variantColorClass = ''
@@ -47,8 +47,9 @@ const Button = ({
       {/* TODO: render dropdown */}
       {isDropdown && (
         <img
-          src='/public/assets/images/icon-dropdown.svg'
+          src='/assets/images/icon-dropdown.svg'
           className='h-[9px] w-3.5 md:w-3 md:h-4.5'
+          alt='dropdown-icon'
         />
       )}
     </button>

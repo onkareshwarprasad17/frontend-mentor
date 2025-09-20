@@ -1,4 +1,5 @@
 import Button from '../../../ui/Button'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '../../../ui/Dropdown'
 
 const HourlyForecast = () => {
   const forecastByHourData = [
@@ -52,14 +53,70 @@ const HourlyForecast = () => {
       {/* Header */}
       <div className='flex justify-between items-center'>
         <p className='font-dm-sans font-semibold text-xl leading-[120%]'>Hourly forecast</p>
-        <Button
-          label='Tuesday'
-          icon='/assets/images/icon-units.svg'
-          className='text-sm md:text-base'
-          isDropdown={true}
-          variant='custom'
-          variantColor='bg-neutral-600'
-        />
+
+        <Dropdown>
+          <DropdownTrigger>
+            <Button
+              label='Tuesday'
+              icon='/assets/images/icon-units.svg'
+              className='text-sm md:text-base'
+              isDropdown
+              variant='custom'
+              variantColor='bg-neutral-600'
+            />
+          </DropdownTrigger>
+          <DropdownMenu className='w-[13.2rem]'>
+            <DropdownItem>
+              <div className='py-2.5 px-2'>
+                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
+                  Monday
+                </p>
+              </div>
+            </DropdownItem>
+            <DropdownItem>
+              <div className='py-2.5 px-2'>
+                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
+                  Tuesday
+                </p>
+              </div>
+            </DropdownItem>
+            <DropdownItem>
+              <div className='py-2.5 px-2'>
+                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
+                  Wednesday
+                </p>
+              </div>
+            </DropdownItem>
+            <DropdownItem>
+              <div className='py-2.5 px-2'>
+                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
+                  Thursday
+                </p>
+              </div>
+            </DropdownItem>
+            <DropdownItem>
+              <div className='py-2.5 px-2'>
+                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
+                  Friday
+                </p>
+              </div>
+            </DropdownItem>
+            <DropdownItem>
+              <div className='py-2.5 px-2'>
+                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
+                  Saturday
+                </p>
+              </div>
+            </DropdownItem>
+            <DropdownItem>
+              <div className='py-2.5 px-2'>
+                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
+                  Sunday
+                </p>
+              </div>
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
       </div>
 
       {/* Forecast data */}

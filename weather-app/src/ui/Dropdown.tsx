@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react'
+import useClickOutside from '../hooks/useClickOutside'
 
 interface DropdownContextType {
   isOpen: boolean
@@ -19,9 +20,16 @@ const useDropdown = () => {
 const Dropdown = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false)
 
+  function handleClickOutside() {
+    setIsOpen(false)
+  }
+  const { ref } = useClickOutside(handleClickOutside)
+
   return (
     <DropdownMenuContext.Provider value={{ isOpen, setIsOpen }}>
-      <div className='relative'>{children}</div>
+      <div className='relative' ref={ref}>
+        {children}
+      </div>
     </DropdownMenuContext.Provider>
   )
 }
@@ -34,10 +42,10 @@ const DropdownMenu = ({
   className?: string
 }) => {
   const { isOpen } = useDropdown()
-  console.log('isOpen', isOpen)
+
   return isOpen ? (
     <div
-      className={`absolute top-full right-0 mt-2 px-2 py-1.5 bg-neutral-800 border-neutral-600 border-[1px] drop-shadow-dropdown rounded-xl ${className}`}
+      className={`absolute top-full right-0 mt-2 px-2 py-1.5 bg-neutral-800 border-neutral-600 border-[1px] drop-shadow-dropdown rounded-xl ${className} z-10`}
     >
       <ul className='flex flex-col items-center gap-1 justify-center w-full h-full'>{children}</ul>
     </div>

@@ -44,6 +44,25 @@ const DropdownMenu = ({
   ) : null
 }
 
+const DropdownGroupItem = ({
+  children,
+  header,
+}: {
+  children: React.ReactNode
+  header?: React.ReactNode
+}) => {
+  if (header) {
+    return (
+      <div className='flex flex-col gap-2 w-full'>
+        {header}
+
+        <div className='flex flex-col gap-1'>{children}</div>
+      </div>
+    )
+  }
+  return <div className='flex flex-col gap-1'>{children}</div>
+}
+
 const DropdownItem = ({
   children,
   onItemClick,
@@ -52,7 +71,7 @@ const DropdownItem = ({
   onItemClick?: React.MouseEventHandler
 }) => {
   return (
-    <li className='w-full hover:bg-neutral-700 cursor-pointer' onClick={onItemClick}>
+    <li className='w-full hover:bg-neutral-700 cursor-pointer rounded-lg' onClick={onItemClick}>
       {children}
     </li>
   )
@@ -68,4 +87,4 @@ const DropdownTrigger = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-export { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger }
+export { Dropdown, DropdownGroupItem, DropdownItem, DropdownMenu, DropdownTrigger }

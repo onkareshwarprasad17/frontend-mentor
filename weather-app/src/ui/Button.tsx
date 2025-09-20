@@ -15,8 +15,8 @@ const Button = ({
   isDropdown,
   variant = 'secondary',
   variantColor,
+  onClick,
 }: ButtonProps) => {
-  // should close the dropdown when clicked outside
   const renderIcon = () => {
     return <img src={icon} className='h-3.5 w-3.5 md:w-4 md:h-4' alt='button-icon' />
   }
@@ -39,12 +39,12 @@ const Button = ({
 
   return (
     <button
-      className={`flex gap-1.5 md:gap-2.5 items-center justify-center rounded-md font-dm-sans font-medium text-neutral-0 leading-[120%] cursor-pointer ${variantColorClass} ${className ? className : ''} `}
+      className={`flex gap-1.5 md:gap-2.5 items-center justify-center rounded-md font-dm-sans font-medium text-neutral-0 leading-[120%] cursor-pointer py-2 px-2.5 md:py-3 md:px-4 ${variantColorClass} ${className ? className : ''} `}
+      onClick={onClick}
     >
       {icon && renderIcon()}
       {label}
 
-      {/* TODO: render dropdown */}
       {isDropdown && (
         <img
           src='/assets/images/icon-dropdown.svg'

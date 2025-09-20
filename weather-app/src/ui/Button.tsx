@@ -29,7 +29,7 @@ const Button = ({
       break
 
     case 'secondary':
-      variantColorClass = 'bg-gray-800'
+      variantColorClass = 'bg-neutral-800'
       break
 
     case 'custom':

@@ -4,6 +4,7 @@ import useClickOutside from '../hooks/useClickOutside'
 interface DropdownContextType {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  handleClickOutside: () => void
 }
 
 const DropdownMenuContext = createContext<DropdownContextType | null>(null)
@@ -17,7 +18,7 @@ const useDropdown = () => {
   return context
 }
 
-const Dropdown = ({ children }: { children: React.ReactNode }) => {
+const Dropdown = ({ children, classes }: { children: React.ReactNode; classes?: string }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   function handleClickOutside() {
@@ -26,8 +27,8 @@ const Dropdown = ({ children }: { children: React.ReactNode }) => {
   const { ref } = useClickOutside(handleClickOutside)
 
   return (
-    <DropdownMenuContext.Provider value={{ isOpen, setIsOpen }}>
-      <div className='relative' ref={ref}>
+    <DropdownMenuContext.Provider value={{ isOpen, setIsOpen, handleClickOutside }}>
+      <div className={`relative ${classes}`} ref={ref}>
         {children}
       </div>
     </DropdownMenuContext.Provider>
@@ -78,8 +79,16 @@ const DropdownItem = ({
   children: React.ReactNode
   onItemClick?: React.MouseEventHandler
 }) => {
+  const { handleClickOutside } = useDropdown()
+  const handleItemClick = (e: React.MouseEvent) => {
+    if (onItemClick) {
+      onItemClick(e)
+    }
+    handleClickOutside()
+  }
+
   return (
-    <li className='w-full hover:bg-neutral-700 cursor-pointer rounded-lg' onClick={onItemClick}>
+    <li className='w-full hover:bg-neutral-700 cursor-pointer rounded-lg' onClick={handleItemClick}>
       {children}
     </li>
   )
@@ -89,7 +98,7 @@ const DropdownTrigger = ({ children }: { children: React.ReactNode }) => {
   const { setIsOpen, isOpen } = useDropdown()
 
   return (
-    <div className='w-fit' onClick={() => setIsOpen(!isOpen)}>
+    <div className='w-full' onClick={() => setIsOpen(!isOpen)}>
       {children}
     </div>
   )

@@ -87,8 +87,14 @@ const DropdownItem = ({
     handleClickOutside()
   }
 
+  const isButton = Boolean(onItemClick)
+
   return (
-    <li className='w-full hover:bg-neutral-700 cursor-pointer rounded-lg' onClick={handleItemClick}>
+    <li
+      className={`w-full hover:bg-neutral-700 rounded-lg ${isButton ? 'cursor-pointer' : ''}`}
+      role={isButton ? 'button' : 'listitem'}
+      onClick={handleItemClick}
+    >
       {children}
     </li>
   )

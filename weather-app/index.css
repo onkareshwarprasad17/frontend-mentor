@@ -21,6 +21,11 @@
   /* fonts */
   --font-dm-sans: "DM Sans", sans-serif;
   --font-bricolage-grotesque: "Bricolage Grotesque", sans-serif;
+
+  --drop-shadow-dropdown: 0 8px 16px #02012c 32%;
+  --drop-shadow-dropdown-button:
+    0 0 0 3px var(--color-neutral-900), 0 0 0 5px var(--color-neutral-0);
+  --shadow-dropdown-item: 0 0 0 1px var(--color-neutral-900), 0 0 0 2px var(--color-neutral-0);
 }
 
 #root {

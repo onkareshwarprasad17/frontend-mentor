@@ -1,16 +1,34 @@
+import { useWeatherContext } from '../../../context/WeatherContext'
+
 const WeatherDetails = () => {
+  const { weatherData, isLoading } = useWeatherContext()
+  console.log('isLoading in WeatherDetails', isLoading)
   const displayValues = [
-    { label: 'Feels Like', value: `18&deg;` }, // Need to check how to render the degree symbol
-    { label: 'Humidity', value: '65%' },
-    { label: 'Wind', value: '12 km/h' },
-    { label: 'Precipitation', value: '5 mm' },
+    {
+      label: 'Feels Like',
+      value: `${isLoading ? '--' : weatherData?.current.apparent_temperature}°`,
+    }, // Need to check how to render the degree symbol
+    { label: 'Humidity', value: `${weatherData?.current.humidity}%` },
+    {
+      label: 'Wind',
+      value: `${weatherData?.current.wind_speed} ${weatherData?.currentUnits.wind_speed}`,
+    },
+    {
+      label: 'Precipitation',
+      value: `${weatherData?.current.precipitation} ${weatherData?.currentUnits.precipitation}`,
+    },
   ]
+
+  // if (isLoading) {
+  //   return <div>Loading weather details...</div>
+  // }
 
   return (
     <div
       className='flex flex-wrap justify-center gap-4 md:gap-4 lg:gap-6 w-full'
       data-testid='weather-details'
     >
+      <p>{JSON.stringify(weatherData)}</p>
       {displayValues.map(({ label, value }, index) => (
         <div
           key={index}

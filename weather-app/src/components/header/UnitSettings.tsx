@@ -1,3 +1,4 @@
+import { useWeatherContext } from '../../context/WeatherContext'
 import Button from '../../ui/Button'
 import {
   Dropdown,
@@ -8,6 +9,8 @@ import {
 } from '../../ui/Dropdown'
 
 const UnitSettings = () => {
+  const { toggleUnit, unit } = useWeatherContext()
+
   return (
     <Dropdown>
       <DropdownTrigger>
@@ -19,10 +22,10 @@ const UnitSettings = () => {
         />
       </DropdownTrigger>
       <DropdownMenu className='w-[13.2rem]'>
-        <DropdownItem>
+        <DropdownItem onItemClick={toggleUnit}>
           <div className='py-2.5 px-2'>
             <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
-              Switch to Metric
+              Switch to {unit === 'celsius' ? 'Imperial' : 'Metric'}
             </p>
           </div>
         </DropdownItem>
@@ -39,7 +42,9 @@ const UnitSettings = () => {
               <button className='text-neutral-0 font-dm-sans font-medium text-base leading-[120%]'>
                 Celsius (&deg;C)
               </button>
-              <img src={'/assets/images/icon-checkmark.svg'} alt='dropdown-item-icon' />
+              {unit === 'celsius' && (
+                <img src={'/assets/images/icon-checkmark.svg'} alt='dropdown-item-icon' />
+              )}
             </div>
           </DropdownItem>
           <DropdownItem>
@@ -47,7 +52,9 @@ const UnitSettings = () => {
               <button className='text-neutral-0 font-dm-sans font-medium text-base leading-[120%]'>
                 Fahrenheit (&deg;F)
               </button>
-              <img src={'/assets/images/icon-checkmark.svg'} alt='dropdown-item-icon' />
+              {unit === 'fahrenheit' && (
+                <img src={'/assets/images/icon-checkmark.svg'} alt='dropdown-item-icon' />
+              )}
             </div>
           </DropdownItem>
         </DropdownGroupItem>
@@ -64,7 +71,9 @@ const UnitSettings = () => {
               <button className='text-neutral-0 font-dm-sans font-medium text-base leading-[120%]'>
                 km/h
               </button>
-              <img src={'/assets/images/icon-checkmark.svg'} alt='dropdown-item-icon' />
+              {unit === 'celsius' && (
+                <img src={'/assets/images/icon-checkmark.svg'} alt='dropdown-item-icon' />
+              )}
             </div>
           </DropdownItem>
           <DropdownItem>
@@ -72,7 +81,9 @@ const UnitSettings = () => {
               <button className='text-neutral-0 font-dm-sans font-medium text-base leading-[120%]'>
                 mph
               </button>
-              <img src={'/assets/images/icon-checkmark.svg'} alt='dropdown-item-icon' />
+              {unit === 'fahrenheit' && (
+                <img src={'/assets/images/icon-checkmark.svg'} alt='dropdown-item-icon' />
+              )}
             </div>
           </DropdownItem>
         </DropdownGroupItem>
@@ -89,7 +100,9 @@ const UnitSettings = () => {
               <button className='text-neutral-0 font-dm-sans font-medium text-base leading-[120%]'>
                 Millimeters (mm)
               </button>
-              <img src={'/assets/images/icon-checkmark.svg'} alt='dropdown-item-icon' />
+              {unit === 'celsius' && (
+                <img src={'/assets/images/icon-checkmark.svg'} alt='dropdown-item-icon' />
+              )}
             </div>
           </DropdownItem>
           <DropdownItem>
@@ -97,7 +110,9 @@ const UnitSettings = () => {
               <button className='text-neutral-0 font-dm-sans font-medium text-base leading-[120%]'>
                 Inches (in)
               </button>
-              <img src={'/assets/images/icon-checkmark.svg'} alt='dropdown-item-icon' />
+              {unit === 'fahrenheit' && (
+                <img src={'/assets/images/icon-checkmark.svg'} alt='dropdown-item-icon' />
+              )}
             </div>
           </DropdownItem>
         </DropdownGroupItem>

@@ -6,29 +6,27 @@ const WeatherDetails = () => {
   const displayValues = [
     {
       label: 'Feels Like',
-      value: `${isLoading ? '--' : weatherData?.current.apparent_temperature}°`,
+      value: `${isLoading ? '--' : weatherData?.current.apparent_temperature + ' ' + weatherData?.currentUnits.apparent_temperature}`,
     }, // Need to check how to render the degree symbol
-    { label: 'Humidity', value: `${weatherData?.current.humidity}%` },
+    {
+      label: 'Humidity',
+      value: `${isLoading ? '--' : weatherData?.current.humidity + ' ' + weatherData?.currentUnits.humidity}`,
+    },
     {
       label: 'Wind',
-      value: `${weatherData?.current.wind_speed} ${weatherData?.currentUnits.wind_speed}`,
+      value: `${isLoading ? '--' : weatherData?.current.wind_speed} ${isLoading ? '' : weatherData?.currentUnits.wind_speed}`,
     },
     {
       label: 'Precipitation',
-      value: `${weatherData?.current.precipitation} ${weatherData?.currentUnits.precipitation}`,
+      value: `${isLoading ? '--' : weatherData?.current.precipitation} ${isLoading ? '' : weatherData?.currentUnits.precipitation}`,
     },
   ]
-
-  // if (isLoading) {
-  //   return <div>Loading weather details...</div>
-  // }
 
   return (
     <div
       className='flex flex-wrap justify-center gap-4 md:gap-4 lg:gap-6 w-full'
       data-testid='weather-details'
     >
-      <p>{JSON.stringify(weatherData)}</p>
       {displayValues.map(({ label, value }, index) => (
         <div
           key={index}

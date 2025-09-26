@@ -1,4 +1,3 @@
-import { Suspense } from 'react'
 import WeatherDetails from './WeatherDetails'
 import WeatherInfo from './WeatherInfo'
 
@@ -9,9 +8,7 @@ const WeatherInfoContainer = () => {
       data-testid='weather-info-container'
     >
       <WeatherInfo />
-      <Suspense fallback={<div>Loading weather details...</div>}>
-        <WeatherDetails />
-      </Suspense>
+      <WeatherDetails />
     </div>
   )
 }

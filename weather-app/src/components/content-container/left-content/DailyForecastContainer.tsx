@@ -52,7 +52,10 @@ const DailyForecastContainer = () => {
       <div className='flex gap-4 w-full flex-wrap'>
         {forecastByDaysData &&
           forecastByDaysData.map(({ day, icon, high, low }) => (
-            <div className='flex flex-col flex-1 basis-0 gap-4 px-2.5 py-4 bg-neutral-800 border-neutral-600 border rounded-xl items-center max-md:min-w-[103.66px] max-md:max-w-[103.66px]'>
+            <div
+              className='flex flex-col flex-1 basis-0 gap-4 px-2.5 py-4 bg-neutral-800 border-neutral-600 border rounded-xl items-center max-md:min-w-[103.66px] max-md:max-w-[103.66px]'
+              key={day}
+            >
               <p className='font-dm-sans font-medium text-lg leading-[120%]'>{day.slice(0, 3)}</p>
               <img src={icon} alt='day-weather-icon' className='h-[3.75rem] w-[3.75rem]' />
               <div className='flex justify-between items-center w-full'>

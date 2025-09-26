@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
+import useQuery from '../hooks/useQuery'
 
 interface WeatherContextType {
   unit: 'celsius' | 'fahrenheit'
@@ -38,64 +39,56 @@ const useWeatherContext = () => {
   return context
 }
 
+const getWeatherData = async () => {
+  const response = await fetch(
+    'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&daily=temperature_2m_max,temperature_2m_min&hourly=temperature_2m&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m&timezone=auto',
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    }
+  )
+
+  const data = await response.json()
+  const parsedData: WeatherData = {
+    current: {
+      temperature: data.current.temperature_2m,
+      apparent_temperature: data.current.apparent_temperature,
+      humidity: data.current.relative_humidity_2m,
+      wind_speed: data.current.wind_speed_10m,
+      precipitation: data.current.precipitation,
+    },
+    currentUnits: {
+      temperature: data.current_units.temperature_2m,
+      apparent_temperature: data.current_units.apparent_temperature,
+      humidity: data.current_units.relative_humidity_2m,
+      wind_speed: data.current_units.wind_speed_10m,
+      precipitation: data.current_units.precipitation,
+    },
+  }
+  return parsedData
+}
+
 const WeatherContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [unit, setUnit] = useState<WeatherContextType['unit']>('celsius')
-  const [weatherData, setWeatherData] = useState<WeatherData>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [error, setError] = useState<string | null>(null)
+  const status = useQuery(getWeatherData, [unit])
 
   const toggleUnit = () => {
     setUnit((prevUnit) => (prevUnit === 'celsius' ? 'fahrenheit' : 'celsius'))
   }
 
-  useEffect(() => {
-    async function fetchWeatherData() {
-      setIsLoading(true)
-      setError(null)
-
-      try {
-        const response = await fetch(
-          'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&daily=temperature_2m_max,temperature_2m_min&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,apparent_temperature&timezone=auto',
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json; charset=utf-8',
-            },
-          }
-        )
-
-        const data = await response.json()
-
-        const parsedWeatherData = {
-          current: {
-            temperature: data.current.temperature_2m,
-            apparent_temperature: data.current.apparent_temperature,
-            humidity: data.current.relative_humidity_2m,
-            wind_speed: data.current.wind_speed_10m,
-            precipitation: data.current.precipitation,
-          },
-          currentUnits: {
-            temperature: data.current_units.temperature_2m,
-            apparent_temperature: data.current_units.apparent_temperature,
-            humidity: data.current_units.relative_humidity_2m,
-            wind_speed: data.current_units.wind_speed_10m,
-            precipitation: data.current_units.precipitation,
-          },
-        }
-        console.log('data in context', data)
-        setWeatherData(parsedWeatherData)
-      } catch (error) {
-        setError(`Failed to fetch weather data - ${error}`)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchWeatherData()
-  }, [unit, setIsLoading, setError, setWeatherData])
-
   return (
-    <WeatherContext.Provider value={{ unit, setUnit, toggleUnit, weatherData, isLoading, error }}>
+    <WeatherContext.Provider
+      value={{
+        unit,
+        setUnit,
+        toggleUnit,
+        weatherData: status.status === 'success' ? status.data : null,
+        isLoading: status.status === 'loading',
+        error: status.status === 'error' ? status.error.message : null,
+      }}
+    >
       {children}
     </WeatherContext.Provider>
   )

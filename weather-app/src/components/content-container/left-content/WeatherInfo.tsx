@@ -1,8 +1,9 @@
 import { useWeatherContext } from '../../../context/WeatherContext'
+import { getWeatherIconFromCode } from '../../../lib/helpers'
 
 const WeatherInfo = () => {
   const { isLoading, weatherData } = useWeatherContext()
-  console.log('weatherData', weatherData)
+
   return (
     <div
       className={`relative overflow-hidden h-[286px] w-full rounded-[20px] ${isLoading ? '' : 'bg-[url(/assets/images/bg-today-small.svg)] md:bg-[url(/assets/images/bg-today-large.svg)] px-6 py-20'} bg-cover bg-center`}
@@ -39,7 +40,7 @@ const WeatherInfo = () => {
           {/* Temperature Info */}
           <div className='flex items-center max-md:justify-center gap-5 max-md:-top-[2.6rem] relative'>
             <img
-              src='/assets/images/icon-sunny.webp'
+              src={`/assets/images/icon-${getWeatherIconFromCode(weatherData?.current.weatherCode ?? 0)}.webp`}
               alt='temperature-icon'
               className='w-[7.5rem] h-[7.5rem]'
             />

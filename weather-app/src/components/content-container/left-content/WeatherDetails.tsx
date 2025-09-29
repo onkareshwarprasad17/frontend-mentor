@@ -2,7 +2,7 @@ import { useWeatherContext } from '../../../context/WeatherContext'
 
 const WeatherDetails = () => {
   const { weatherData, isLoading } = useWeatherContext()
-  console.log('isLoading in WeatherDetails', isLoading)
+
   const displayValues = [
     {
       label: 'Feels Like',

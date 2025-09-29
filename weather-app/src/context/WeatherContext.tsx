@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react'
+import { getFormattedDate } from '../helpers/getFormattedDate'
 import useQuery from '../hooks/useQuery'
 
 interface WeatherContextType {
@@ -12,6 +13,7 @@ interface WeatherContextType {
 
 type WeatherData = {
   current: {
+    currentDate: string
     temperature: number
     apparent_temperature: number
     humidity: number
@@ -51,8 +53,10 @@ const getWeatherData = async () => {
   )
 
   const data = await response.json()
+
   const parsedData: WeatherData = {
     current: {
+      currentDate: getFormattedDate(data.current.time),
       temperature: data.current.temperature_2m,
       apparent_temperature: data.current.apparent_temperature,
       humidity: data.current.relative_humidity_2m,

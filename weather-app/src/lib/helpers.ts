@@ -69,3 +69,46 @@ export const getWeatherIconFromCode = (weatherCode: number) => {
   }
   return 'sunny' // default to sunny weather
 }
+
+interface HourlyWeatherData {
+  temperatures: number[]
+  time: string[]
+  weather_code: number[]
+}
+
+type HourlyWeatherDataMap = Map<string, Array<{ hour: string; temp: number; weatherCode: number }>>
+
+export const formatHourlyWeatherData = (hourlyData?: HourlyWeatherData): HourlyWeatherDataMap => {
+  if (!hourlyData) return new Map()
+  const { temperatures, time, weather_code } = hourlyData
+
+  const result = new Map()
+  time.forEach((item: string, index: number) => {
+    const date = new Date(item)
+    const currentDate = getCurrentDayName(item)
+    const hours = date.getHours()
+
+    // Handling 12 hours
+    const displayHour = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours
+    const period = hours >= 12 ? 'PM' : 'AM'
+
+    const formattedHourTemp = {
+      hour: `${displayHour} ${period}`,
+      temp: temperatures[index],
+      weatherCode: weather_code[index],
+    }
+
+    const existing = result.get(currentDate) || []
+    result.set(currentDate, [...existing, formattedHourTemp])
+  })
+
+  return result
+}
+
+export const getCurrentDayName = (date?: string) => {
+  if (!date) {
+    return new Date().toLocaleDateString('en-IN', { weekday: 'long' })
+  }
+
+  return new Date(date).toLocaleDateString('en-IN', { weekday: 'long' })
+}

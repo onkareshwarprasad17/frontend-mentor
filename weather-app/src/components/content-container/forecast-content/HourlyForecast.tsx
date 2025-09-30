@@ -1,54 +1,40 @@
+import { useMemo, useState } from 'react'
+import { useWeatherContext } from '../../../context/WeatherContext'
+import {
+  formatHourlyWeatherData,
+  getCurrentDayName,
+  getWeatherIconFromCode,
+} from '../../../lib/helpers'
 import Button from '../../../ui/Button'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '../../../ui/Dropdown'
+import { HourlyForecastItemSkeleton } from '../../../ui/Skeleton'
 
 const HourlyForecast = () => {
-  const forecastByHourData = [
-    {
-      time: '3 PM',
-      icon: '/assets/images/icon-overcast.webp',
-      temp: '20°',
-    },
-    {
-      time: '4 PM',
-      icon: '/assets/images/icon-sunny.webp',
-      temp: '28°',
-    },
-    {
-      time: '5 PM',
-      icon: '/assets/images/icon-rain.webp',
-      temp: '30°',
-    },
-    {
-      time: '6 PM',
-      icon: '/assets/images/icon-partly-cloudy.webp',
-      temp: '25°',
-    },
-    {
-      time: '7 PM',
-      icon: '/assets/images/icon-snow.webp',
-      temp: '36°',
-    },
-    {
-      time: '8 PM',
-      icon: '/assets/images/icon-storm.webp',
-      temp: '22°',
-    },
-    {
-      time: '9 PM',
-      icon: '/assets/images/icon-fog.webp',
-      temp: '34°',
-    },
-    {
-      time: '10 PM',
-      icon: '/assets/images/icon-drizzle.webp',
-      temp: '18°',
-    },
-  ]
+  const { isLoading, weatherData } = useWeatherContext()
+  const [currentDay, setCurrentDay] = useState(() => getCurrentDayName())
+
+  /* TODO: Current Date values from current time
+  const currentDateTimeString = new Date()
+  const currentDateArray = weatherData?.hourly.time.filter((item) =>
+    item.includes(currentDateTimeString.toISOString().split('T')[0])
+  )
+
+  const final = currentDateArray
+    ?.filter((item) => new Date(item).getHours() > currentDateTimeString.getHours())
+    .map((item) => new Date(item).toLocaleTimeString('en-IN'))
+*/
+
+  const hourlyForcastedData = useMemo(
+    () => formatHourlyWeatherData(weatherData?.hourly),
+    [weatherData?.hourly]
+  )
+  const days = Array.from(hourlyForcastedData.keys())
+  const hourlyData = hourlyForcastedData.get(currentDay) || []
 
   return (
     <div
       data-testid='right-hourly-forecast'
-      className='flex flex-col xl:max-w-96 w-full p-5 md:p-6 bg-neutral-800 rounded-[1.25rem] gap-4'
+      className='flex flex-col xl:max-w-96 w-full p-5 md:p-6 bg-neutral-800 rounded-[1.25rem] gap-4 max-h-[693px]'
     >
       {/* Header */}
       <div className='flex justify-between items-center'>
@@ -57,7 +43,7 @@ const HourlyForecast = () => {
         <Dropdown>
           <DropdownTrigger>
             <Button
-              label='Tuesday'
+              label={currentDay}
               icon='/assets/images/icon-units.svg'
               className='text-sm md:text-base'
               isDropdown
@@ -66,73 +52,41 @@ const HourlyForecast = () => {
             />
           </DropdownTrigger>
           <DropdownMenu className='w-[13.2rem]'>
-            <DropdownItem>
-              <div className='py-2.5 px-2'>
-                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
-                  Monday
-                </p>
-              </div>
-            </DropdownItem>
-            <DropdownItem>
-              <div className='py-2.5 px-2'>
-                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
-                  Tuesday
-                </p>
-              </div>
-            </DropdownItem>
-            <DropdownItem>
-              <div className='py-2.5 px-2'>
-                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
-                  Wednesday
-                </p>
-              </div>
-            </DropdownItem>
-            <DropdownItem>
-              <div className='py-2.5 px-2'>
-                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
-                  Thursday
-                </p>
-              </div>
-            </DropdownItem>
-            <DropdownItem>
-              <div className='py-2.5 px-2'>
-                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
-                  Friday
-                </p>
-              </div>
-            </DropdownItem>
-            <DropdownItem>
-              <div className='py-2.5 px-2'>
-                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
-                  Saturday
-                </p>
-              </div>
-            </DropdownItem>
-            <DropdownItem>
-              <div className='py-2.5 px-2'>
-                <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
-                  Sunday
-                </p>
-              </div>
-            </DropdownItem>
+            {days.map((day) => (
+              <DropdownItem onItemClick={() => setCurrentDay(day)} key={day}>
+                <div className='py-2.5 px-2'>
+                  <p className='text-neutral-0 text-base font-dm-sans font-medium leading-[120%]'>
+                    {day}
+                  </p>
+                </div>
+              </DropdownItem>
+            ))}
           </DropdownMenu>
         </Dropdown>
       </div>
 
-      {/* Forecast data */}
-      {forecastByHourData &&
-        forecastByHourData.map(({ time, icon, temp }) => (
-          <div
-            className='flex w-full py-2.5 pl-3 pr-4 gap-1 items-center bg-neutral-700 rounded-lg border-neutral-600 border'
-            key={time}
-          >
-            <img src={icon} alt='hour-weather-icon' className='h-10 w-10' />
-            <p className='font-dm-sans font-medium text-xl leading-[120%] flex-1 basis-0 text-left'>
-              {time}
-            </p>
-            <p className='font-dm-sans font-medium text-base leading-[120%]'>{temp}</p>
-          </div>
-        ))}
+      <div className='overflow-hidden overflow-y-scroll gap-4 flex flex-col scrollbar-hidden'>
+        {isLoading && <HourlyForecastItemSkeleton />}
+
+        {/* Forecast data */}
+        {!!hourlyData &&
+          hourlyData.map(({ hour, temp, weatherCode }) => (
+            <div
+              className='flex w-full py-2.5 pl-3 pr-4 gap-1 items-center bg-neutral-700 rounded-lg border-neutral-600 border'
+              key={`${currentDay}-${hour}`}
+            >
+              <img
+                src={`/assets/images/icon-${getWeatherIconFromCode(weatherCode)}.webp`}
+                alt='hour-weather-icon'
+                className='h-10 w-10'
+              />
+              <p className='font-dm-sans font-medium text-xl leading-[120%] flex-1 basis-0 text-left'>
+                {hour}
+              </p>
+              <p className='font-dm-sans font-medium text-base leading-[120%]'>{temp}</p>
+            </div>
+          ))}
+      </div>
     </div>
   )
 }

@@ -17,3 +17,16 @@ export const DailyForecastContainerSkeleton = () => {
     </>
   )
 }
+
+export const HourlyForecastItemSkeleton = () => {
+  return (
+    <>
+      {Array.from({ length: 8 }, (_, index) => (
+        <div
+          className='py-2.5 h-[60px] w-full pl-3 pr-4 items-center bg-neutral-700 rounded-lg border-neutral-600 border'
+          key={index}
+        ></div>
+      ))}
+    </>
+  )
+}

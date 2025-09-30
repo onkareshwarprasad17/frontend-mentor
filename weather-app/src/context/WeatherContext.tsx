@@ -28,6 +28,11 @@ interface WeatherData {
     wind_speed: string
     precipitation: string
   }
+  hourly: {
+    time: string[]
+    temperatures: number[]
+    weather_code: number[]
+  }
   forecastByDaysData: [{ high: number; low: number; day: string; icon: number }]
 }
 
@@ -45,7 +50,7 @@ const useWeatherContext = () => {
 
 const getWeatherData = async () => {
   const response = await fetch(
-    'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&daily=weather_code&daily=temperature_2m_max,temperature_2m_min&hourly=temperature_2m&current=weather_code,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m&timezone=auto',
+    'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&daily=weather_code&daily=temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&current=weather_code,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m&timezone=auto',
     {
       method: 'GET',
       headers: {
@@ -87,6 +92,11 @@ const getWeatherData = async () => {
       humidity: data.current_units.relative_humidity_2m,
       wind_speed: data.current_units.wind_speed_10m,
       precipitation: data.current_units.precipitation,
+    },
+    hourly: {
+      time: data.hourly.time,
+      temperatures: data.hourly.temperature_2m,
+      weather_code: data.hourly.weather_code,
     },
     forecastByDaysData: dailyForecastedData,
   }

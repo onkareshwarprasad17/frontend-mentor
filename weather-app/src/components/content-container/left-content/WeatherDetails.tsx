@@ -1,9 +1,25 @@
+import { useWeatherContext } from '../../../context/WeatherContext'
+
 const WeatherDetails = () => {
+  const { weatherData, isLoading } = useWeatherContext()
+
   const displayValues = [
-    { label: 'Feels Like', value: `18&deg;` }, // Need to check how to render the degree symbol
-    { label: 'Humidity', value: '65%' },
-    { label: 'Wind', value: '12 km/h' },
-    { label: 'Precipitation', value: '5 mm' },
+    {
+      label: 'Feels Like',
+      value: `${isLoading ? '--' : weatherData?.current.apparent_temperature + ' ' + weatherData?.currentUnits.apparent_temperature}`,
+    },
+    {
+      label: 'Humidity',
+      value: `${isLoading ? '--' : weatherData?.current.humidity + ' ' + weatherData?.currentUnits.humidity}`,
+    },
+    {
+      label: 'Wind',
+      value: `${isLoading ? '--' : weatherData?.current.wind_speed} ${isLoading ? '' : weatherData?.currentUnits.wind_speed}`,
+    },
+    {
+      label: 'Precipitation',
+      value: `${isLoading ? '--' : weatherData?.current.precipitation} ${isLoading ? '' : weatherData?.currentUnits.precipitation}`,
+    },
   ]
 
   return (

@@ -21,6 +21,11 @@
   /* fonts */
   --font-dm-sans: "DM Sans", sans-serif;
   --font-bricolage-grotesque: "Bricolage Grotesque", sans-serif;
+
+  --drop-shadow-dropdown: 0 8px 16px #02012c 32%;
+  --drop-shadow-dropdown-button:
+    0 0 0 3px var(--color-neutral-900), 0 0 0 5px var(--color-neutral-0);
+  --shadow-dropdown-item: 0 0 0 1px var(--color-neutral-900), 0 0 0 2px var(--color-neutral-0);
 }
 
 #root {
@@ -35,4 +40,53 @@ body {
 
 .class-hello {
   background-color: red;
+}
+
+.loader {
+  width: 40px;
+  aspect-ratio: 2;
+  --_g: no-repeat radial-gradient(circle closest-side, var(--color-neutral-0) 90%, #0000);
+  background:
+    var(--_g) 0% 50%,
+    var(--_g) 50% 50%,
+    var(--_g) 100% 50%;
+  background-size: calc(100% / 3) 50%;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {
+  20% {
+    background-position:
+      0% 0%,
+      50% 50%,
+      100% 50%;
+  }
+  40% {
+    background-position:
+      0% 100%,
+      50% 0%,
+      100% 50%;
+  }
+  60% {
+    background-position:
+      0% 50%,
+      50% 100%,
+      100% 0%;
+  }
+  80% {
+    background-position:
+      0% 50%,
+      50% 50%,
+      100% 100%;
+  }
+}
+
+/* Hide scrollbar for Safari, Chrome and Opera  */
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox, Edge and IE */
+.scrollbar-hidden {
+  -ms-overflow-style: none; /* IE and Edge*/
+  scrollbar-width: none; /* Firefox*/
 }

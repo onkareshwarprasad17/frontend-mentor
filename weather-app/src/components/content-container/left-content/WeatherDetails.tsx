@@ -7,7 +7,7 @@ const WeatherDetails = () => {
     {
       label: 'Feels Like',
       value: `${isLoading ? '--' : weatherData?.current.apparent_temperature + ' ' + weatherData?.currentUnits.apparent_temperature}`,
-    }, // Need to check how to render the degree symbol
+    },
     {
       label: 'Humidity',
       value: `${isLoading ? '--' : weatherData?.current.humidity + ' ' + weatherData?.currentUnits.humidity}`,

@@ -1,5 +1,6 @@
 import { useWeatherContext } from '../../../context/WeatherContext'
 import { getWeatherIconFromCode } from '../../../lib/helpers'
+import { WeatherInfoSkeleton } from '../../../ui/Skeleton'
 
 const WeatherInfo = () => {
   const { isLoading, weatherData } = useWeatherContext()
@@ -10,17 +11,7 @@ const WeatherInfo = () => {
       data-testid='weather-info'
     >
       {isLoading ? (
-        <div
-          style={{ backgroundColor: '#262540' }}
-          className='w-full h-full flex items-center justify-center'
-        >
-          <div className='flex items-center justify-center flex-col'>
-            <div className='loader' />
-            <p className='font-dm-sans font-medium text-lg leading-[120%] text-neutral-200'>
-              Loading...
-            </p>
-          </div>
-        </div>
+        <WeatherInfoSkeleton />
       ) : (
         <div className='flex flex-col gap-4 md:flex-row items-center justify-center md:justify-between'>
           {/* Location Info */}

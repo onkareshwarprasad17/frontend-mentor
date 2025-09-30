@@ -30,3 +30,19 @@ export const HourlyForecastItemSkeleton = () => {
     </>
   )
 }
+
+export const WeatherInfoSkeleton = () => {
+  return (
+    <div
+      style={{ backgroundColor: '#262540' }}
+      className='w-full h-full flex items-center justify-center'
+    >
+      <div className='flex items-center justify-center flex-col'>
+        <div className='loader' />
+        <p className='font-dm-sans font-medium text-lg leading-[120%] text-neutral-200'>
+          Loading...
+        </p>
+      </div>
+    </div>
+  )
+}

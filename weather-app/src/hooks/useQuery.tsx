@@ -5,9 +5,9 @@ type AsyncState<T> =
   | { status: 'success'; data: T }
   | { status: 'error'; error: Error }
 
-export default function useQuery<T>(
-  fn: () => Promise<T>,
-  deps: DependencyList = []
+export default function useQuery<T, Args extends unknown[]>(
+  fn: (...args: Args) => Promise<T>,
+  deps: [...Args] & DependencyList
 ): AsyncState<T> {
   const [status, setStatus] = useState<AsyncState<T>>({ status: 'loading' })
 
@@ -19,7 +19,7 @@ export default function useQuery<T>(
       setStatus({ status: 'loading' })
 
       try {
-        const response = await fn()
+        const response = await fn(...(deps as Args))
 
         // Check if request was cancelled while waiting
         if (!isCancelled) {

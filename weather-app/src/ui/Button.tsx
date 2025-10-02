@@ -1,7 +1,7 @@
-type ButtonProps = {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   label: string
   onClick?: React.MouseEventHandler<HTMLButtonElement>
-  className?: string
+  className: string
   icon?: string
   isDropdown?: boolean
   variant?: 'primary' | 'secondary' | 'custom'
@@ -15,6 +15,7 @@ const Button = ({
   isDropdown,
   variant = 'secondary',
   variantColor,
+  disabled,
   onClick,
 }: ButtonProps) => {
   const renderIcon = () => {
@@ -41,6 +42,7 @@ const Button = ({
     <button
       className={`flex gap-1.5 md:gap-2.5 items-center justify-center rounded-md font-dm-sans font-medium text-neutral-0 leading-[120%] cursor-pointer py-2 px-2.5 md:py-3 md:px-4 ${variantColorClass} ${className ? className : ''} `}
       onClick={onClick}
+      disabled={disabled}
     >
       {icon && renderIcon()}
       {label}

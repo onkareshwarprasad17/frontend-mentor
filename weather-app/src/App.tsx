@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
-import ContentContainer from './components/content-container/ContentContainer'
+import Content from './components/Content'
 import Header from './components/header/Header'
-import SearchContainer from './components/search-container/SearchContainer'
 import { WeatherContextProvider } from './context/WeatherContext'
 
 function App() {
@@ -15,8 +14,7 @@ function App() {
           </h1>
 
           <main className='flex flex-col lg:gap-12 gap-8 items-center'>
-            <SearchContainer />
-            <ContentContainer />
+            <Content />
           </main>
         </div>
       </Suspense>

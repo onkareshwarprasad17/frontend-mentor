@@ -1,6 +1,8 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useState } from 'react'
+import { type Location, useLocation } from '../hooks/useLocation'
 import useQuery from '../hooks/useQuery'
-import { getFormattedDate } from '../lib/helpers'
+import { baseLocation, type WeatherData } from '../lib/constants'
+import { getWeatherData } from '../lib/helpers'
 
 interface WeatherContextType {
   unit: 'celsius' | 'fahrenheit'
@@ -9,31 +11,7 @@ interface WeatherContextType {
   weatherData: WeatherData | null
   isLoading: boolean
   error: string | null
-}
-
-interface WeatherData {
-  current: {
-    currentDate: string
-    temperature: number
-    apparent_temperature: number
-    humidity: number
-    wind_speed: number
-    precipitation: number
-    weatherCode: number
-  }
-  currentUnits: {
-    temperature: string
-    apparent_temperature: string
-    humidity: string
-    wind_speed: string
-    precipitation: string
-  }
-  hourly: {
-    time: string[]
-    temperatures: number[]
-    weather_code: number[]
-  }
-  forecastByDaysData: [{ high: number; low: number; day: string; icon: number }]
+  handleSearch: (location: Location) => void
 }
 
 const WeatherContext = createContext<WeatherContextType | null>(null)
@@ -48,68 +26,21 @@ const useWeatherContext = () => {
   return context
 }
 
-const getWeatherData = async (unit: string) => {
-  let baseUrl =
-    'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&daily=weather_code&daily=temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&current=weather_code,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m&timezone=auto'
-
-  if (unit === 'fahrenheit') {
-    baseUrl += '&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch'
-  }
-
-  const response = await fetch(baseUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json;charset=utf-8',
-    },
-  })
-
-  const data = await response.json()
-
-  const forecastedDays = data.daily.time.reduce((acc: string[], cur: string) => {
-    const currentDay = new Date(cur).toLocaleDateString('en-IN', { weekday: 'short' })
-    acc = [...acc, currentDay]
-    return acc
-  }, [])
-
-  const dailyForecastedData: WeatherData['forecastByDaysData'] = forecastedDays.map(
-    (item: string, index: string | number) => ({
-      day: item,
-      high: data.daily.temperature_2m_max[index],
-      low: data.daily.temperature_2m_min[index],
-      icon: data.daily.weather_code[index],
-    })
-  )
-
-  const parsedData: WeatherData = {
-    current: {
-      currentDate: getFormattedDate(data.current.time),
-      temperature: data.current.temperature_2m,
-      apparent_temperature: data.current.apparent_temperature,
-      humidity: data.current.relative_humidity_2m,
-      wind_speed: data.current.wind_speed_10m,
-      precipitation: data.current.precipitation,
-      weatherCode: data.current.weather_code,
-    },
-    currentUnits: {
-      temperature: data.current_units.temperature_2m,
-      apparent_temperature: data.current_units.apparent_temperature,
-      humidity: data.current_units.relative_humidity_2m,
-      wind_speed: data.current_units.wind_speed_10m,
-      precipitation: data.current_units.precipitation,
-    },
-    hourly: {
-      time: data.hourly.time,
-      temperatures: data.hourly.temperature_2m,
-      weather_code: data.hourly.weather_code,
-    },
-    forecastByDaysData: dailyForecastedData,
-  }
-  return parsedData
-}
-
 const WeatherContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [unit, setUnit] = useState<WeatherContextType['unit']>('celsius')
-  const status = useQuery(getWeatherData, [unit])
+  const { geoLocation } = useLocation()
+
+  const [selectedLocation, setSelectedLocation] = useState<Location>(baseLocation.location)
+  const locationToSearch = selectedLocation.latitude !== 0 ? selectedLocation : geoLocation.location
+  const status = useQuery(getWeatherData, [unit, locationToSearch])
+
+  const handleSearchedLocation = useCallback(
+    (location: Location) => {
+      console.log('handleSearchLocation called', location, unit, selectedLocation)
+      setSelectedLocation(location)
+    },
+    [unit, selectedLocation]
+  )
 
   const toggleUnit = () => {
     setUnit((prevUnit) => (prevUnit === 'celsius' ? 'fahrenheit' : 'celsius'))
@@ -124,6 +55,7 @@ const WeatherContextProvider = ({ children }: { children: React.ReactNode }) => 
         weatherData: status.status === 'success' ? status.data : null,
         isLoading: status.status === 'loading',
         error: status.status === 'error' ? status.error.message : null,
+        handleSearch: handleSearchedLocation,
       }}
     >
       {children}

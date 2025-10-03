@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { baseLocation } from '../lib/constants'
 
 export type Location = {
@@ -15,6 +15,12 @@ export const useLocation = () => {
   const [geoLocation, setGeoLocation] = useState<GeoLocationType>({
     location: baseLocation.location,
   })
+
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0, // To not use cached position
+  }
 
   function successGeoLocation(position: GeolocationPosition) {
     const location = {
@@ -54,7 +60,7 @@ export const useLocation = () => {
     })
   }
 
-  const getGeoLocation = useCallback(async () => {
+  const getGeoLocation = () => {
     if (!('geolocation' in navigator)) {
       const errorMessage = 'Geolocation is not supported. Using default location.'
       console.warn(errorMessage)
@@ -66,22 +72,7 @@ export const useLocation = () => {
     }
 
     try {
-      const permission = await navigator.permissions.query({ name: 'geolocation' })
-
-      if (permission.state === 'denied') {
-        const errorMessage = 'Location permission was denied. Using default location.'
-        console.warn(errorMessage)
-        setGeoLocation((prev) => ({
-          ...prev,
-          error: { message: errorMessage },
-        }))
-      }
-
-      navigator.geolocation.getCurrentPosition(successGeoLocation, errorGeoLocation, {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0, // To not use cached position
-      })
+      navigator.geolocation.getCurrentPosition(successGeoLocation, errorGeoLocation, options)
     } catch (error) {
       console.error('Error checking geolocation permission:', error)
       setGeoLocation((prev) => ({
@@ -89,11 +80,11 @@ export const useLocation = () => {
         error: { message: 'Error accessing geolocation. Using default location.' },
       }))
     }
-  }, [])
+  }
 
   useEffect(() => {
     getGeoLocation()
-  }, [getGeoLocation])
+  }, [])
 
-  return { geoLocation, getGeoLocation }
+  return { location: geoLocation.location, error: geoLocation.error }
 }

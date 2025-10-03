@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useWeatherContext } from '../context/WeatherContext'
 import HourlyForecast from './content-container/forecast-content/HourlyForecast'
 import DailyForecastContainer from './content-container/left-content/DailyForecastContainer'
 import WeatherDetails from './content-container/left-content/WeatherDetails'
@@ -6,8 +7,15 @@ import WeatherInfo from './content-container/left-content/WeatherInfo'
 import SearchContainer from './search-container/SearchContainer'
 
 const Content = () => {
-  // TODO: Need to reverse geocode value to add as initial state here
+  const { locationName: locName } = useWeatherContext()
   const [locationName, setLocationName] = useState<string>('')
+
+  useEffect(() => {
+    if (locName) {
+      setLocationName(locName)
+    }
+  }, [locName])
+
   return (
     <>
       <SearchContainer onSelectLocation={(name: string) => setLocationName(name)} />

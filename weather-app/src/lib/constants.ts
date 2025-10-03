@@ -73,3 +73,6 @@ export interface SearchLocationResponse {
   error?: boolean
   reason?: string
 }
+
+// TODO: Update the geonames_username
+export const GEONAMES_USERNAME = 'demo'

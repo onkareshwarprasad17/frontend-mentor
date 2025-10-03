@@ -1,9 +1,11 @@
-import type {
-  HourlyWeatherData,
-  SearchLocationResponse,
-  SearchLocationResult,
-  WeatherData,
-  WeatherRanges,
+import type { Location } from '../hooks/useLocation'
+import {
+  GEONAMES_USERNAME,
+  type HourlyWeatherData,
+  type SearchLocationResponse,
+  type SearchLocationResult,
+  type WeatherData,
+  type WeatherRanges,
 } from './constants'
 
 export const getFormattedDate = (date: string) => {
@@ -85,7 +87,6 @@ export const getWeatherData = async (
   unit: 'celsius' | 'fahrenheit',
   location: { latitude: number; longitude: number }
 ) => {
-  console.log('location in helpers.ts', location)
   let baseUrl = `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weather_code&daily=temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&current=weather_code,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m&timezone=auto`
 
   if (unit === 'fahrenheit') {
@@ -172,4 +173,33 @@ export const getSearchLocationData = async (term: string) => {
   )
 
   return formattedData
+}
+
+export const getLocationName = async (location: Location) => {
+  const stringifiedLocation = `${location.latitude}-${location.longitude}`
+  if (localStorage.getItem('location') === stringifiedLocation) {
+    return localStorage.getItem('locationName') ?? ''
+  }
+
+  try {
+    const response = await fetch(
+      `http://api.geonames.org/findNearbyJSON?lat=${location.latitude}&lng=${location.longitude}&username=${GEONAMES_USERNAME}`
+    )
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error('Error in response')
+    }
+
+    const locationName = `${data?.geonames[0].toponymName}, ${data?.geonames[0].countryName}`
+
+    localStorage.setItem('location', stringifiedLocation)
+    localStorage.setItem('locationName', locationName)
+    return locationName
+  } catch (error) {
+    localStorage.removeItem('location')
+    localStorage.removeItem('locationName')
+    return 'Error occured' + error
+  }
 }

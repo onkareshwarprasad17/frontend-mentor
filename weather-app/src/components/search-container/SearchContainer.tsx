@@ -24,7 +24,6 @@ const SearchContainer = ({ onSelectLocation }: { onSelectLocation: (name: string
       setError('')
 
       const searchLocationData = await getSearchLocationData(term)
-      console.log('searched', searchLocationData)
       setSearchResults(searchLocationData)
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Error occured while fetching location')

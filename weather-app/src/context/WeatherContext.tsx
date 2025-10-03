@@ -1,8 +1,8 @@
-import { createContext, useCallback, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { type Location, useLocation } from '../hooks/useLocation'
 import useQuery from '../hooks/useQuery'
-import { baseLocation, type WeatherData } from '../lib/constants'
-import { getWeatherData } from '../lib/helpers'
+import { type WeatherData } from '../lib/constants'
+import { getLocationName, getWeatherData } from '../lib/helpers'
 
 interface WeatherContextType {
   unit: 'celsius' | 'fahrenheit'
@@ -10,7 +10,8 @@ interface WeatherContextType {
   toggleUnit: () => void
   weatherData: WeatherData | null
   isLoading: boolean
-  error: string | null
+  error: string | undefined
+  locationName: string
   handleSearch: (location: Location) => void
 }
 
@@ -28,39 +29,60 @@ const useWeatherContext = () => {
 
 const WeatherContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [unit, setUnit] = useState<WeatherContextType['unit']>('celsius')
-  const { geoLocation } = useLocation()
+  const { location } = useLocation()
 
-  const [selectedLocation, setSelectedLocation] = useState<Location>(baseLocation.location)
-  const locationToSearch = selectedLocation.latitude !== 0 ? selectedLocation : geoLocation.location
-  const status = useQuery(getWeatherData, [unit, locationToSearch])
+  const [selectedLocation, setSelectedLocation] = useState<Location>(location)
+  const [locationName, setLocatioName] = useState<string>('')
 
-  const handleSearchedLocation = useCallback(
-    (location: Location) => {
-      console.log('handleSearchLocation called', location, unit, selectedLocation)
+  const status = useQuery(getWeatherData, [unit, selectedLocation])
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null)
+  const [weatherError, setWeatherError] = useState<Error>()
+
+  const handleSearchedLocation = useCallback((location: Location) => {
+    setSelectedLocation(location)
+  }, [])
+
+  useEffect(() => {
+    if (status.status === 'success') {
+      setWeatherData(status.data)
+    } else if (status.status === 'error') {
+      setWeatherError(status.error)
+    }
+  }, [status])
+
+  useEffect(() => {
+    async function fetchLocatioName(location: Location) {
+      const locationName = await getLocationName(location)
+      if (locationName.indexOf('Error')) {
+        setWeatherError({ message: 'Error fetching the current location!', name: 'error' })
+      }
+      setLocatioName(locationName)
+    }
+    if (location.longitude !== 0) {
+      fetchLocatioName(location)
       setSelectedLocation(location)
-    },
-    [unit, selectedLocation]
-  )
+    }
+  }, [location, setSelectedLocation])
 
   const toggleUnit = () => {
     setUnit((prevUnit) => (prevUnit === 'celsius' ? 'fahrenheit' : 'celsius'))
   }
 
-  return (
-    <WeatherContext.Provider
-      value={{
-        unit,
-        setUnit,
-        toggleUnit,
-        weatherData: status.status === 'success' ? status.data : null,
-        isLoading: status.status === 'loading',
-        error: status.status === 'error' ? status.error.message : null,
-        handleSearch: handleSearchedLocation,
-      }}
-    >
-      {children}
-    </WeatherContext.Provider>
+  const value = useMemo(
+    () => ({
+      unit,
+      setUnit,
+      toggleUnit,
+      weatherData: weatherData,
+      isLoading: status.status === 'loading',
+      error: weatherError?.message,
+      handleSearch: handleSearchedLocation,
+      locationName,
+    }),
+    [unit, weatherData, status.status, weatherError?.message, handleSearchedLocation, locationName]
   )
+
+  return <WeatherContext.Provider value={value}>{children}</WeatherContext.Provider>
 }
 
 // TODO: Update eslint rule

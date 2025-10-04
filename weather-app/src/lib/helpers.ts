@@ -167,6 +167,8 @@ export const getSearchLocationData = async (term: string) => {
         longitude: item.longitude,
         country_code: item.country_code,
         admin1: item.admin1,
+        admin2: item.admin2,
+        admin3: item.admin3,
       }
     }
   )
@@ -190,7 +192,7 @@ export const getGeolocationName = async (location: Location) => {
     const data = await response.json()
 
     if (!response.ok) {
-      throw new Error('Error in response')
+      throw new Error('Error while fetching location name!')
     }
 
     const locationName = `${data?.geonames[0].toponymName}, ${data?.geonames[0].countryName}`
@@ -201,6 +203,22 @@ export const getGeolocationName = async (location: Location) => {
   } catch (error) {
     localStorage.removeItem('location')
     localStorage.removeItem('locationName')
-    return 'Error occured' + error
+    return 'Error:' + error
   }
+}
+
+export const formatSearchedLocationResult = (location: {
+  name: string
+  country: string
+  admin1?: string
+  admin2?: string
+  admin3?: string
+}) => {
+  const adminParts = [location.admin1, location.admin2, location.admin3].filter(Boolean).join(', ')
+  const fullLocationName = `${location.name}${adminParts.length ? `, ${adminParts}` : ''}, ${location.country}`
+
+  if (fullLocationName.length > 65) {
+    return `${fullLocationName.slice(0, 60)}...`
+  }
+  return fullLocationName
 }

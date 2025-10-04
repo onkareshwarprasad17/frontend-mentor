@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useWeatherContext } from '../context/WeatherContext'
+import Error from '../ui/Error'
 import HourlyForecast from './content-container/forecast-content/HourlyForecast'
 import DailyForecastContainer from './content-container/left-content/DailyForecastContainer'
 import WeatherDetails from './content-container/left-content/WeatherDetails'
@@ -7,7 +8,7 @@ import WeatherInfo from './content-container/left-content/WeatherInfo'
 import SearchContainer from './search-container/SearchContainer'
 
 const Content = () => {
-  const { locationName: locName } = useWeatherContext()
+  const { locationName: locName, error } = useWeatherContext()
   const [locationName, setLocationName] = useState<string>('')
 
   useEffect(() => {
@@ -15,6 +16,10 @@ const Content = () => {
       setLocationName(locName)
     }
   }, [locName])
+
+  if (error) {
+    return <Error message={error} />
+  }
 
   return (
     <>

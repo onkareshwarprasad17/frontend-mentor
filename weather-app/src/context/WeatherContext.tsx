@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { type Location, useLocation } from '../hooks/useLocation'
 import useQuery from '../hooks/useQuery'
 import { type WeatherData } from '../lib/constants'
-import { getLocationName, getWeatherData } from '../lib/helpers'
+import { getGeolocationName, getWeatherData } from '../lib/helpers'
 
 interface WeatherContextType {
   unit: 'celsius' | 'fahrenheit'
@@ -29,7 +29,7 @@ const useWeatherContext = () => {
 
 const WeatherContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [unit, setUnit] = useState<WeatherContextType['unit']>('celsius')
-  const { location } = useLocation()
+  const { location, error: locationError } = useLocation()
 
   const [selectedLocation, setSelectedLocation] = useState<Location>(location)
   const [locationName, setLocatioName] = useState<string>('')
@@ -52,9 +52,9 @@ const WeatherContextProvider = ({ children }: { children: React.ReactNode }) => 
 
   useEffect(() => {
     async function fetchLocatioName(location: Location) {
-      const locationName = await getLocationName(location)
-      if (locationName.indexOf('Error')) {
-        setWeatherError({ message: 'Error fetching the current location!', name: 'error' })
+      const locationName = await getGeolocationName(location)
+      if (locationName.indexOf('Error') >= 0) {
+        setWeatherError({ message: 'Error fetching the location name!' } as Error)
       }
       setLocatioName(locationName)
     }
@@ -62,7 +62,7 @@ const WeatherContextProvider = ({ children }: { children: React.ReactNode }) => 
       fetchLocatioName(location)
       setSelectedLocation(location)
     }
-  }, [location, setSelectedLocation])
+  }, [location])
 
   const toggleUnit = () => {
     setUnit((prevUnit) => (prevUnit === 'celsius' ? 'fahrenheit' : 'celsius'))
@@ -75,11 +75,19 @@ const WeatherContextProvider = ({ children }: { children: React.ReactNode }) => 
       toggleUnit,
       weatherData: weatherData,
       isLoading: status.status === 'loading',
-      error: weatherError?.message,
+      error: weatherError?.message || locationError?.message,
       handleSearch: handleSearchedLocation,
       locationName,
     }),
-    [unit, weatherData, status.status, weatherError?.message, handleSearchedLocation, locationName]
+    [
+      unit,
+      weatherData,
+      status.status,
+      weatherError?.message,
+      locationError?.message,
+      handleSearchedLocation,
+      locationName,
+    ]
   )
 
   return <WeatherContext.Provider value={value}>{children}</WeatherContext.Provider>

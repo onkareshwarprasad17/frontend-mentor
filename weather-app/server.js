@@ -19,7 +19,7 @@ async function createServer() {
     )
 
     const data = await response.json()
-    res.status(200).json({ message: 'recevied geocode', data })
+    res.status(200).json(data)
   })
 
   let vite

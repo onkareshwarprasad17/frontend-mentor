@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { baseLocation } from '../lib/constants'
 
 export type Location = {
@@ -16,11 +16,14 @@ export const useLocation = () => {
     location: baseLocation.location,
   })
 
-  const options = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 0, // To not use cached position
-  }
+  const options = useMemo(
+    () => ({
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0, // To not use cached position
+    }),
+    []
+  )
 
   function successGeoLocation(position: GeolocationPosition) {
     const location = {
@@ -39,17 +42,18 @@ export const useLocation = () => {
 
     switch (error.code) {
       case error.PERMISSION_DENIED:
-        errorMessage = 'Location permission was denied!'
+        errorMessage =
+          'Location permission was denied. Please enable location access from site settings!'
         break
       case error.POSITION_UNAVAILABLE:
-        errorMessage = 'Location information is unavailable.'
+        errorMessage = 'Location information is unavailable. Please try later!'
         break
       case error.TIMEOUT:
-        errorMessage = 'Request to get location timed out.'
+        errorMessage = 'Request to get location timed out. Please check your network strength!'
         break
     }
 
-    console.warn(`Geolocation error: ${errorMessage}`)
+    console.error(`Geolocation error: ${errorMessage}`)
 
     setGeoLocation({
       location: baseLocation.location,
@@ -60,7 +64,7 @@ export const useLocation = () => {
     })
   }
 
-  const getGeoLocation = () => {
+  const getGeoLocation = useCallback(() => {
     if (!('geolocation' in navigator)) {
       const errorMessage = 'Geolocation is not supported. Using default location.'
       console.warn(errorMessage)
@@ -77,10 +81,10 @@ export const useLocation = () => {
       console.error('Error checking geolocation permission:', error)
       setGeoLocation((prev) => ({
         ...prev,
-        error: { message: 'Error accessing geolocation. Using default location.' },
+        error: { message: (error as Error).message },
       }))
     }
-  }
+  }, [options])
 
   useEffect(() => {
     getGeoLocation()

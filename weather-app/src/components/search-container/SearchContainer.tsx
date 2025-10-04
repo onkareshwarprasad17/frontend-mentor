@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useWeatherContext } from '../../context/WeatherContext'
 import { useDebounce } from '../../hooks/useDebounce'
-import type { SearchLocationResponse, SearchLocationResult } from '../../lib/constants'
-import { getSearchLocationData } from '../../lib/helpers'
+import type { SearchLocationResponse } from '../../lib/constants'
+import { formatSearchedLocationResult, getSearchLocationData } from '../../lib/helpers'
 import Button from '../../ui/Button'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '../../ui/Dropdown'
 
@@ -57,6 +57,21 @@ const SearchContainer = ({ onSelectLocation }: { onSelectLocation: (name: string
     setSearchTerm(inputValue)
   }
 
+  const formattedSearchedLocations = useMemo(() => {
+    if (searchResults && searchResults.length) {
+      return searchResults.map((result) => ({
+        ...result,
+        formattedLocationName: formatSearchedLocationResult({
+          name: result.name,
+          country: result.country,
+          admin1: result.admin1,
+          admin2: result.admin2,
+          admin3: result.admin3,
+        }),
+      }))
+    }
+  }, [searchResults])
+
   return (
     <div className='sm:flex sm:flex-row sm:gap-4 gap-3 flex flex-col max-w-[656px] items-center justify-between w-full'>
       <Dropdown classes='w-full' isOpen={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
@@ -75,7 +90,9 @@ const SearchContainer = ({ onSelectLocation }: { onSelectLocation: (name: string
             />
           </div>
         </DropdownTrigger>
-        <DropdownMenu className='w-full'>
+        <DropdownMenu
+          className={`w-full ${searchResults && searchResults.length > 5 ? 'max-h-52 overflow-hidden overflow-y-scroll scrollbar-hidden' : ''}`}
+        >
           {loading && (
             <DropdownItem>
               <div className='px-2 py-2.5 rounded-lg hover:border-neutral-600 flex items-center'>
@@ -91,7 +108,7 @@ const SearchContainer = ({ onSelectLocation }: { onSelectLocation: (name: string
             </DropdownItem>
           )}
 
-          {!loading && error && !searchResults?.length && (
+          {!loading && !searchResults?.length && error && (
             <DropdownItem>
               <div className='px-2 py-2.5 rounded-lg flex items-center'>
                 <p className='font-dm-sans font-medium text-base leading-[120%]'>{error} </p>
@@ -100,7 +117,8 @@ const SearchContainer = ({ onSelectLocation }: { onSelectLocation: (name: string
           )}
 
           {!loading &&
-            searchResults?.map((result: SearchLocationResult) => (
+            !error &&
+            formattedSearchedLocations?.map((result) => (
               <DropdownItem
                 key={result.id}
                 onItemClick={() => {
@@ -110,7 +128,9 @@ const SearchContainer = ({ onSelectLocation }: { onSelectLocation: (name: string
                 }}
               >
                 <div className='px-2 py-2.5 rounded-lg hover:border-[1px] hover:border-solid hover:border-neutral-600 flex items-center'>
-                  <p className='font-dm-sans font-medium text-base leading-[120%]'>{`${result.name}${result?.country ? ', ' + result.country : ''}`}</p>
+                  <p className='font-dm-sans font-medium text-base leading-[120%]'>
+                    {result.formattedLocationName}
+                  </p>
                 </div>
               </DropdownItem>
             ))}

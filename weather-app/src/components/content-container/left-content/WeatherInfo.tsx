@@ -34,7 +34,7 @@ const WeatherInfo = ({ location }: { location: { name: string } }) => {
               alt='temperature-icon'
               className='w-[7.5rem] h-[7.5rem]'
             />
-            <p className='font-dm-sans font-semibold italic leading-none -tracking-[2px] text-8xl'>
+            <p className='font-dm-sans font-semibold italic leading-none -tracking-[2px] xl:text-8xl lg:text-6xl text-5xl'>
               {weatherData?.current.temperature} {weatherData?.currentUnits.temperature}
             </p>
           </div>

@@ -13,7 +13,6 @@ const SearchContainer = ({ onSelectLocation }: { onSelectLocation: (name: string
   const { handleSearch: onSearchItemClicked } = useWeatherContext()
 
   const [loading, setLoading] = useState<boolean>(false)
-  // Need to add a Error Boundary at the parent level to handle this error
   const [error, setError] = useState<string>('')
   const [searchResults, setSearchResults] = useState<SearchLocationResponse['results']>([])
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
@@ -76,7 +75,7 @@ const SearchContainer = ({ onSelectLocation }: { onSelectLocation: (name: string
     <div className='sm:flex sm:flex-row sm:gap-4 gap-3 flex flex-col max-w-[656px] items-center justify-between w-full'>
       <Dropdown classes='w-full' isOpen={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
         <DropdownTrigger isControlled={true}>
-          <div className='flex items-center justify-start bg-neutral-800 px-6 py-4 rounded-xl w-full'>
+          <div className='group flex items-center justify-start bg-neutral-800 px-6 py-4 rounded-xl w-full focus-within:border-ring focus-within:ring-ring/50 focus-within:ring'>
             <img src='/assets/images/icon-search.svg' alt='search-icon' className='inline mr-4' />
             <label htmlFor='search-field' />
             <input
@@ -87,6 +86,7 @@ const SearchContainer = ({ onSelectLocation }: { onSelectLocation: (name: string
               placeholder='Search for a place...'
               className='font-dm-sans font-medium text-xl leading-[120%] text-left text-neutral-200 focus:text-neutral-200 w-full h-full outline-none'
               onFocus={() => (searchResults?.length ? setIsDropdownOpen(true) : null)}
+              autoComplete='off'
             />
           </div>
         </DropdownTrigger>

@@ -112,3 +112,19 @@ export const getCurrentDayName = (date?: string) => {
 
   return new Date(date).toLocaleDateString('en-IN', { weekday: 'long' })
 }
+
+export const getGeolocationName = async (location: { latitude: number; longitude: number }) => {
+  try {
+    const response = await fetch('/api/reverse-geocoding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lat: location.latitude, lng: location.longitude }),
+    })
+
+    const data = await response.json()
+
+    console.log('data in reverse geocode', data)
+  } catch (e) {
+    console.warn(e)
+  }
+}

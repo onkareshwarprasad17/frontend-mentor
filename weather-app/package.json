@@ -4,24 +4,30 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "node server",
+    "build": "vite build --outDir dist/client",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "prod": "cross-env NODE_ENV=production node server",
+    "preview": "node server",
     "format": "prettier --write ."
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.6.2",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@typescript-eslint/parser": "^8.43.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "cross-env": "^10.1.0",
     "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",

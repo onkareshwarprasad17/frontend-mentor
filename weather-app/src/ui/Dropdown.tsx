@@ -1,9 +1,17 @@
 import { createContext, useContext, useState } from 'react'
 import useClickOutside from '../hooks/useClickOutside'
 
+interface DropdownProps {
+  children: React.ReactNode
+  classes?: string
+  isOpen?: boolean
+  onOpenChange?: (isOpen: boolean) => void
+  closeOnClickOutside?: boolean
+}
+
 interface DropdownContextType {
   isOpen: boolean
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setIsOpen: (value: boolean) => void
   handleClickOutside: () => void
 }
 
@@ -12,18 +20,38 @@ const DropdownMenuContext = createContext<DropdownContextType | null>(null)
 const useDropdown = () => {
   const context = useContext(DropdownMenuContext)
   if (!context) {
-    throw new Error('DropdownMenu must be used within a DropdownProvider')
+    throw new Error('useDropdown must be used within a DropdownProvider')
   }
-
   return context
 }
 
-const Dropdown = ({ children, classes }: { children: React.ReactNode; classes?: string }) => {
-  const [isOpen, setIsOpen] = useState(false)
+const Dropdown = ({
+  children,
+  classes,
+  isOpen: controlledIsOpen,
+  onOpenChange,
+  closeOnClickOutside = true,
+}: DropdownProps) => {
+  // Internal state for uncontrolled mode
+  const [internalIsOpen, setInternalIsOpen] = useState(false)
+
+  // Determine if we're in controlled or uncontrolled mode
+  const isControlled = controlledIsOpen !== undefined
+  const isOpen = isControlled ? controlledIsOpen : internalIsOpen
+
+  const setIsOpen = (value: boolean) => {
+    if (!isControlled) {
+      setInternalIsOpen(value)
+    }
+    onOpenChange?.(value)
+  }
 
   function handleClickOutside() {
-    setIsOpen(false)
+    if (closeOnClickOutside) {
+      setIsOpen(false)
+    }
   }
+
   const { ref } = useClickOutside(handleClickOutside)
 
   return (
@@ -100,11 +128,20 @@ const DropdownItem = ({
   )
 }
 
-const DropdownTrigger = ({ children }: { children: React.ReactNode }) => {
+const DropdownTrigger = ({
+  children,
+  isControlled = false,
+}: {
+  children: React.ReactNode
+  isControlled?: boolean
+}) => {
   const { setIsOpen, isOpen } = useDropdown()
 
+  const handleTriggerClick = () => setIsOpen(!isOpen)
+  const onClickHandler = isControlled ? undefined : handleTriggerClick
+
   return (
-    <div className='w-full' onClick={() => setIsOpen(!isOpen)}>
+    <div className='w-full' onClick={onClickHandler}>
       {children}
     </div>
   )

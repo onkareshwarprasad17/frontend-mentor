@@ -1,43 +1,139 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useWeatherContext } from '../../context/WeatherContext'
+import { useDebounce } from '../../hooks/useDebounce'
+import type { SearchLocationResponse } from '../../lib/constants'
+import { formatSearchedLocationResult, getSearchLocationData } from '../../lib/helpers'
 import Button from '../../ui/Button'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '../../ui/Dropdown'
 
-const SearchContainer = () => {
+const SearchContainer = ({ onSelectLocation }: { onSelectLocation: (name: string) => void }) => {
+  const [searchTerm, setSearchTerm] = useState('')
+  const debouncedSearchTerm = useDebounce(searchTerm, 500)
+
+  const { handleSearch: onSearchItemClicked } = useWeatherContext()
+
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string>('')
+  const [searchResults, setSearchResults] = useState<SearchLocationResponse['results']>([])
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
+
+  const handleSearch = useCallback(async (term: string) => {
+    try {
+      setLoading(true)
+      setError('')
+
+      const searchLocationData = await getSearchLocationData(term)
+      setSearchResults(searchLocationData)
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Error occured while fetching location')
+      setSearchResults([])
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    setIsDropdownOpen(loading || Boolean(searchResults?.length) || Boolean(error.length))
+  }, [loading, searchResults, error])
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      if (/\d/.test(debouncedSearchTerm)) {
+        setError('Location name cannot contain numbers. Please enter a valid location name.')
+        setSearchResults([])
+        return // Don't perform search if input contains numbers
+      }
+      handleSearch(debouncedSearchTerm)
+    } else {
+      // Clear results when search term is empty
+      setSearchResults([])
+      setError('')
+    }
+  }, [debouncedSearchTerm, handleSearch])
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value.trim()
+    setSearchTerm(inputValue)
+  }
+
+  const formattedSearchedLocations = useMemo(() => {
+    if (searchResults && searchResults.length) {
+      return searchResults.map((result) => ({
+        ...result,
+        formattedLocationName: formatSearchedLocationResult({
+          name: result.name,
+          country: result.country,
+          admin1: result.admin1,
+          admin2: result.admin2,
+          admin3: result.admin3,
+        }),
+      }))
+    }
+  }, [searchResults])
+
   return (
     <div className='sm:flex sm:flex-row sm:gap-4 gap-3 flex flex-col max-w-[656px] items-center justify-between w-full'>
-      <Dropdown classes='w-full'>
-        <DropdownTrigger>
-          <div className='flex items-center justify-start bg-neutral-800 px-6 py-4 rounded-xl w-full'>
+      <Dropdown classes='w-full' isOpen={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+        <DropdownTrigger isControlled={true}>
+          <div className='group flex items-center justify-start bg-neutral-800 px-6 py-4 rounded-xl w-full focus-within:border-ring focus-within:ring-ring/50 focus-within:ring'>
             <img src='/assets/images/icon-search.svg' alt='search-icon' className='inline mr-4' />
             <label htmlFor='search-field' />
             <input
               type='text'
               id='search-field'
+              value={searchTerm}
+              onChange={handleInputChange}
               placeholder='Search for a place...'
               className='font-dm-sans font-medium text-xl leading-[120%] text-left text-neutral-200 focus:text-neutral-200 w-full h-full outline-none'
+              onFocus={() => (searchResults?.length ? setIsDropdownOpen(true) : null)}
+              autoComplete='off'
             />
           </div>
         </DropdownTrigger>
-        <DropdownMenu className='w-full'>
-          <DropdownItem>
-            <div className='px-2 py-2.5 rounded-lg hover:border-[1px] hover:border-solid hover:border-neutral-600 '>
-              <p className='font-dm-sans font-medium text-base leading-[120%]'>City Name</p>
-            </div>
-          </DropdownItem>
-          <DropdownItem>
-            <div className='px-2 py-2.5 rounded-lg hover:border-[1px] hover:border-solid hover:border-neutral-600 '>
-              <p className='font-dm-sans font-medium text-base leading-[120%]'>City Name</p>
-            </div>
-          </DropdownItem>
-          <DropdownItem>
-            <div className='px-2 py-2.5 rounded-lg hover:border-[1px] hover:border-solid hover:border-neutral-600 '>
-              <p className='font-dm-sans font-medium text-base leading-[120%]'>City Name</p>
-            </div>
-          </DropdownItem>
-          <DropdownItem>
-            <div className='px-2 py-2.5 rounded-lg hover:border-[1px] hover:border-solid hover:border-neutral-600 '>
-              <p className='font-dm-sans font-medium text-base leading-[120%]'>City Name</p>
-            </div>
-          </DropdownItem>
+        <DropdownMenu
+          className={`w-full ${searchResults && searchResults.length > 5 ? 'max-h-52 overflow-hidden overflow-y-scroll scrollbar-hidden' : ''}`}
+        >
+          {loading && (
+            <DropdownItem>
+              <div className='px-2 py-2.5 rounded-lg hover:border-neutral-600 flex items-center'>
+                <img
+                  src='/assets/images/icon-loading.svg'
+                  alt='location-loading-spinner'
+                  className='animate-spin mr-2.5'
+                />
+                <p className='font-dm-sans font-medium text-base leading-[120%]'>
+                  Search in progress
+                </p>
+              </div>
+            </DropdownItem>
+          )}
+
+          {!loading && !searchResults?.length && error && (
+            <DropdownItem>
+              <div className='px-2 py-2.5 rounded-lg flex items-center'>
+                <p className='font-dm-sans font-medium text-base leading-[120%]'>{error} </p>
+              </div>
+            </DropdownItem>
+          )}
+
+          {!loading &&
+            !error &&
+            formattedSearchedLocations?.map((result) => (
+              <DropdownItem
+                key={result.id}
+                onItemClick={() => {
+                  onSearchItemClicked({ latitude: result.latitude, longitude: result.longitude })
+                  onSelectLocation(`${result.name}, ${result.country}`)
+                  setSearchTerm('')
+                }}
+              >
+                <div className='px-2 py-2.5 rounded-lg hover:border-[1px] hover:border-solid hover:border-neutral-600 flex items-center'>
+                  <p className='font-dm-sans font-medium text-base leading-[120%]'>
+                    {result.formattedLocationName}
+                  </p>
+                </div>
+              </DropdownItem>
+            ))}
         </DropdownMenu>
       </Dropdown>
 
@@ -45,6 +141,8 @@ const SearchContainer = () => {
         label='Search'
         className='font-medium text-xl px-6 py-4 rounded-xl w-full sm:w-[116px]'
         variant='primary'
+        disabled={loading || !debouncedSearchTerm.length}
+        onClick={() => handleSearch(debouncedSearchTerm)}
       />
     </div>
   )

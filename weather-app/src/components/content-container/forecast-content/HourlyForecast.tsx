@@ -1,17 +1,13 @@
 import { useMemo, useState } from 'react'
 import { useWeatherContext } from '../../../context/WeatherContext'
-import {
-  formatHourlyWeatherData,
-  getCurrentDayName,
-  getWeatherIconFromCode,
-} from '../../../lib/helpers'
+import { formatHourlyWeatherData, getDayName, getWeatherIconFromCode } from '../../../lib/helpers'
 import Button from '../../../ui/Button'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '../../../ui/Dropdown'
 import { HourlyForecastItemSkeleton } from '../../../ui/Skeleton'
 
 const HourlyForecast = () => {
   const { isLoading, weatherData } = useWeatherContext()
-  const [currentDay, setCurrentDay] = useState(() => getCurrentDayName())
+  const [currentDay, setCurrentDay] = useState(() => getDayName())
 
   /* TODO: Current Date values from current time
   const currentDateTimeString = new Date()

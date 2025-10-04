@@ -1,3 +1,12 @@
+import type { Location } from '../hooks/useLocation'
+import {
+  type HourlyWeatherData,
+  type SearchLocationResponse,
+  type SearchLocationResult,
+  type WeatherData,
+  type WeatherRanges,
+} from './constants'
+
 export const getFormattedDate = (date: string) => {
   const options = {
     day: 'numeric' as 'numeric' | '2-digit' | undefined,
@@ -15,40 +24,6 @@ export const getFormattedDate = (date: string) => {
 
   return currentDate
 }
-
-/*
-  Code	Description
-  0	Clear sky
-  1, 2, 3	Mainly clear, partly cloudy, and overcast
-  45, 48	Fog and depositing rime fog
-  51, 53, 55	Drizzle: Light, moderate, and dense intensity
-  56, 57	Freezing Drizzle: Light and dense intensity
-  61, 63, 65	Rain: Slight, moderate and heavy intensity
-  66, 67	Freezing Rain: Light and heavy intensity
-  71, 73, 75	Snow fall: Slight, moderate, and heavy intensity
-  77	Snow grains
-  80, 81, 82	Rain showers: Slight, moderate, and violent
-  85, 86	Snow showers slight and heavy
-  95 *	Thunderstorm: Slight or moderate
-  96, 99 *	Thunderstorm with slight and heavy hail
-  */
-
-type WeatherType =
-  | 'sunny'
-  | 'partly-cloudy'
-  | 'overcast'
-  | 'fog'
-  | 'drizzle'
-  | 'rain'
-  | 'snow'
-  | 'storm'
-
-interface WeatherRange {
-  codes: number[]
-  type: WeatherType
-}
-
-type WeatherRanges = WeatherRange[]
 
 export const getWeatherIconFromCode = (weatherCode: number) => {
   const weatherCodeMap: WeatherRanges = [
@@ -70,22 +45,16 @@ export const getWeatherIconFromCode = (weatherCode: number) => {
   return 'sunny' // default to sunny weather
 }
 
-interface HourlyWeatherData {
-  temperatures: number[]
-  time: string[]
-  weather_code: number[]
-}
-
-type HourlyWeatherDataMap = Map<string, Array<{ hour: string; temp: number; weatherCode: number }>>
-
-export const formatHourlyWeatherData = (hourlyData?: HourlyWeatherData): HourlyWeatherDataMap => {
+export const formatHourlyWeatherData = (
+  hourlyData?: HourlyWeatherData
+): Map<string, Array<{ hour: string; temp: number; weatherCode: number }>> => {
   if (!hourlyData) return new Map()
   const { temperatures, time, weather_code } = hourlyData
 
   const result = new Map()
   time.forEach((item: string, index: number) => {
     const date = new Date(item)
-    const currentDate = getCurrentDayName(item)
+    const currentDate = getDayName(item)
     const hours = date.getHours()
 
     // Handling 12 hours
@@ -105,7 +74,7 @@ export const formatHourlyWeatherData = (hourlyData?: HourlyWeatherData): HourlyW
   return result
 }
 
-export const getCurrentDayName = (date?: string) => {
+export const getDayName = (date?: string) => {
   if (!date) {
     return new Date().toLocaleDateString('en-IN', { weekday: 'long' })
   }
@@ -113,7 +82,106 @@ export const getCurrentDayName = (date?: string) => {
   return new Date(date).toLocaleDateString('en-IN', { weekday: 'long' })
 }
 
-export const getGeolocationName = async (location: { latitude: number; longitude: number }) => {
+export const getWeatherData = async (
+  unit: 'celsius' | 'fahrenheit',
+  location: { latitude: number; longitude: number }
+) => {
+  let baseUrl = `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weather_code&daily=temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&current=weather_code,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m&timezone=auto`
+
+  if (unit === 'fahrenheit') {
+    baseUrl += '&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch'
+  }
+
+  const response = await fetch(baseUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+  })
+
+  const data = await response.json()
+
+  const forecastedDays = data.daily.time.reduce((acc: string[], cur: string) => {
+    const currentDay = new Date(cur).toLocaleDateString('en-IN', { weekday: 'short' })
+    acc = [...acc, currentDay]
+    return acc
+  }, [])
+
+  const dailyForecastedData: WeatherData['forecastByDaysData'] = forecastedDays.map(
+    (item: string, index: string | number) => ({
+      day: item,
+      high: data.daily.temperature_2m_max[index],
+      low: data.daily.temperature_2m_min[index],
+      icon: data.daily.weather_code[index],
+    })
+  )
+
+  const parsedData: WeatherData = {
+    current: {
+      currentDate: getFormattedDate(data.current.time),
+      temperature: data.current.temperature_2m,
+      apparent_temperature: data.current.apparent_temperature,
+      humidity: data.current.relative_humidity_2m,
+      wind_speed: data.current.wind_speed_10m,
+      precipitation: data.current.precipitation,
+      weatherCode: data.current.weather_code,
+    },
+    currentUnits: {
+      temperature: data.current_units.temperature_2m,
+      apparent_temperature: data.current_units.apparent_temperature,
+      humidity: data.current_units.relative_humidity_2m,
+      wind_speed: data.current_units.wind_speed_10m,
+      precipitation: data.current_units.precipitation,
+    },
+    hourly: {
+      time: data.hourly.time,
+      temperatures: data.hourly.temperature_2m,
+      weather_code: data.hourly.weather_code,
+    },
+    forecastByDaysData: dailyForecastedData,
+  }
+  return parsedData
+}
+
+export const getSearchLocationData = async (term: string) => {
+  const response = await fetch(
+    `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(term)}&count=5&language=en&format=json`
+  )
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch location data')
+  }
+
+  const data = await response.json()
+
+  if (data.error) throw new Error(data.reason || 'Failed to fetch location data')
+  if (!data.results) throw new Error('No records found!')
+
+  const formattedData: SearchLocationResponse['results'] = data.results.map(
+    (item: SearchLocationResult) => {
+      return {
+        id: item.id,
+        name: item.name,
+        country: item.country,
+        latitude: item.latitude,
+        longitude: item.longitude,
+        country_code: item.country_code,
+        admin1: item.admin1,
+        admin2: item.admin2,
+        admin3: item.admin3,
+      }
+    }
+  )
+
+  return formattedData
+}
+
+export const getGeolocationName = async (location: Location) => {
+  const stringifiedLocation = `${location.latitude}-${location.longitude}`
+  if (localStorage.getItem('location') === stringifiedLocation) {
+    return localStorage.getItem('locationName') ?? ''
+  }
+
   try {
     const response = await fetch('/api/reverse-geocoding', {
       method: 'POST',
@@ -123,8 +191,34 @@ export const getGeolocationName = async (location: { latitude: number; longitude
 
     const data = await response.json()
 
-    console.log('data in reverse geocode', data)
-  } catch (e) {
-    console.warn(e)
+    if (!response.ok) {
+      throw new Error('Error while fetching location name!')
+    }
+
+    const locationName = `${data?.geonames[0].toponymName}, ${data?.geonames[0].countryName}`
+
+    localStorage.setItem('location', stringifiedLocation)
+    localStorage.setItem('locationName', locationName)
+    return locationName
+  } catch (error) {
+    localStorage.removeItem('location')
+    localStorage.removeItem('locationName')
+    return 'Error:' + error
   }
+}
+
+export const formatSearchedLocationResult = (location: {
+  name: string
+  country: string
+  admin1?: string
+  admin2?: string
+  admin3?: string
+}) => {
+  const adminParts = [location.admin1, location.admin2, location.admin3].filter(Boolean).join(', ')
+  const fullLocationName = `${location.name}${adminParts.length ? `, ${adminParts}` : ''}, ${location.country}`
+
+  if (fullLocationName.length > 65) {
+    return `${fullLocationName.slice(0, 60)}...`
+  }
+  return fullLocationName
 }

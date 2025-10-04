@@ -2,7 +2,7 @@ import { useWeatherContext } from '../../../context/WeatherContext'
 import { getWeatherIconFromCode } from '../../../lib/helpers'
 import { WeatherInfoSkeleton } from '../../../ui/Skeleton'
 
-const WeatherInfo = () => {
+const WeatherInfo = ({ location }: { location: { name: string } }) => {
   const { isLoading, weatherData } = useWeatherContext()
 
   return (
@@ -20,8 +20,7 @@ const WeatherInfo = () => {
               className='font-dm-sans font-bold text-[28px] leading-[120%]'
               aria-label='Berling, Germany'
             >
-              {/* TODO: use navigator to set and display the location */}
-              Berling, Germany
+              {location.name}
             </h2>
             <p className='font-dm-sans font-medium text-lg leading-[120%]'>
               {weatherData?.current.currentDate}
@@ -35,7 +34,7 @@ const WeatherInfo = () => {
               alt='temperature-icon'
               className='w-[7.5rem] h-[7.5rem]'
             />
-            <p className='font-dm-sans font-semibold italic leading-none -tracking-[2px] text-8xl'>
+            <p className='font-dm-sans font-semibold italic leading-none -tracking-[2px] xl:text-8xl lg:text-6xl text-5xl'>
               {weatherData?.current.temperature} {weatherData?.currentUnits.temperature}
             </p>
           </div>

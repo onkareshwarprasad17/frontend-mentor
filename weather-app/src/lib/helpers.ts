@@ -1,6 +1,5 @@
 import type { Location } from '../hooks/useLocation'
 import {
-  GEONAMES_USERNAME,
   type HourlyWeatherData,
   type SearchLocationResponse,
   type SearchLocationResult,
@@ -175,16 +174,18 @@ export const getSearchLocationData = async (term: string) => {
   return formattedData
 }
 
-export const getLocationName = async (location: Location) => {
+export const getGeolocationName = async (location: Location) => {
   const stringifiedLocation = `${location.latitude}-${location.longitude}`
   if (localStorage.getItem('location') === stringifiedLocation) {
     return localStorage.getItem('locationName') ?? ''
   }
 
   try {
-    const response = await fetch(
-      `http://api.geonames.org/findNearbyJSON?lat=${location.latitude}&lng=${location.longitude}&username=${GEONAMES_USERNAME}`
-    )
+    const response = await fetch('/api/reverse-geocoding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lat: location.latitude, lng: location.longitude }),
+    })
 
     const data = await response.json()
 

@@ -19,7 +19,7 @@ const UnitSettings = () => {
           <Button
             label='Units'
             icon='/assets/images/icon-units.svg'
-            className='text-sm md:text-base'
+            className='text-sm md:text-base py-2 px-2.5 md:py-3 md:px-4'
             isDropdown
           />
         </DropdownTrigger>

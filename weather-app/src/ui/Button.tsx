@@ -40,7 +40,7 @@ const Button = ({
 
   return (
     <button
-      className={`flex gap-1.5 md:gap-2.5 items-center justify-center rounded-md font-dm-sans font-medium text-neutral-0 leading-[120%] cursor-pointer py-2 px-2.5 md:py-3 md:px-4 disabled:pointer-events-none disabled:opacity-50 focus-within:border-ring focus-within:ring-ring/50 focus-within:ring group ${variantColorClass} ${className ? className : ''}`}
+      className={`flex gap-1.5 md:gap-2.5 items-center justify-center rounded-md font-dm-sans font-medium text-neutral-0 leading-[120%] cursor-pointer disabled:pointer-events-none disabled:opacity-50 focus-within:border-ring focus-within:ring-ring/50 focus-within:ring group ${variantColorClass} ${className ? className : ''}`}
       onClick={onClick}
       disabled={disabled}
     >

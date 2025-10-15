@@ -52,10 +52,17 @@ export const formatHourlyWeatherData = (
   const { temperatures, time, weather_code } = hourlyData
 
   const result = new Map()
+  const todayDate = new Date()
+  const todayDayName = getDayName()
+
   time.forEach((item: string, index: number) => {
     const date = new Date(item)
     const currentDate = getDayName(item)
     const hours = date.getHours()
+
+    if (todayDayName === currentDate && hours < todayDate.getHours()) {
+      return
+    }
 
     // Handling 12 hours
     const displayHour = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours

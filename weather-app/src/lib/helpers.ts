@@ -183,19 +183,21 @@ export const getGeolocationName = async (location: Location) => {
   }
 
   try {
-    const response = await fetch('/api/reverse-geocoding', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ lat: location.latitude, lng: location.longitude }),
-    })
-
-    const data = await response.json()
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${location.latitude}&lon=${location.longitude}&format=json&accept-language=en`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
 
     if (!response.ok) {
       throw new Error('Error while fetching location name!')
     }
 
-    const locationName = `${data?.geonames[0].toponymName}, ${data?.geonames[0].countryName}`
+    const data = await response.json()
+    const { village, town, country } = data.address
+    const locationName = `${village ?? town}, ${country}`
 
     localStorage.setItem('location', stringifiedLocation)
     localStorage.setItem('locationName', locationName)

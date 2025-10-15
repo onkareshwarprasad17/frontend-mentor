@@ -14,7 +14,7 @@ const Error = ({ message }: { message: string }) => {
       <Button
         onClick={() => window.location.reload()}
         label='Retry'
-        className='text-base leading-[120%] font-dm-sans font-medium text-neutral-0'
+        className='text-base leading-[120%] font-dm-sans font-medium text-neutral-0 py-2 px-4'
         icon='/assets/images/icon-retry.svg'
       />
     </div>

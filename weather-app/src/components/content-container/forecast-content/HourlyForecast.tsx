@@ -41,7 +41,7 @@ const HourlyForecast = () => {
             <Button
               label={currentDay}
               icon='/assets/images/icon-units.svg'
-              className='text-sm md:text-base'
+              className='text-sm md:text-base py-2 px-4'
               isDropdown
               variant='custom'
               variantColor='bg-neutral-600'

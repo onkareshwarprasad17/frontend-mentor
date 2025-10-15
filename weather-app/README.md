@@ -51,22 +51,15 @@ Frontend:
 - React Context for state management
 - Custom Hooks for reusable logic
 
-Backend:
-
-- [Express.js](https://expressjs.com/) - Node.js web framework
-- [dotenv](https://www.npmjs.com/package/dotenv) - Environment variable management
-
 APIs and External Services:
 
 - [Open Meteo API](https://open-meteo.com/) - Weather data API
-- [Geonames API](https://www.geonames.org/) - For reverse geocoding
 
 ### Notable Features
 
 - Implemented **debounced** search functionality
 - Implemented **custom useQuery** for handling _loading, error and success states_ for async function
 - Worked with **Geolocation and Reverse Geolocation** APIs
-- Implemented an **Express server middleware** to securely _proxy API requests_ and protect sensitive credentials
 - Managing complex state with React Context
 - Handling user preferences (units) with localStorage
 - Implemented responsive layouts with Tailwind CSS
@@ -75,7 +68,6 @@ APIs and External Services:
 ### Useful resources
 
 - [Open Meteo Documentation](https://open-meteo.com/en/docs) - Comprehensive documentation for the weather API
-- [Geonames API Documentation](https://www.geonames.org/export/web-services.html) - Helpful for understanding reverse geocoding
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs) - Great reference for utility classes
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html) - Essential for understanding TypeScript features
 

@@ -15,7 +15,7 @@ const WeatherInfo = ({ location }: { location: { name: string } }) => {
       ) : (
         <div className='flex flex-col gap-4 md:flex-row items-center justify-center md:justify-between'>
           {/* Location Info */}
-          <div className='flex flex-col gap-3 text-center max-md:-top-[2.6rem] relative max-w-[373px] md:text-left'>
+          <div className='flex flex-col gap-3 text-center max-md:-top-[2.6rem] relative max-w-72 md:text-left'>
             <h2
               className='font-dm-sans font-bold text-[28px] leading-[120%]'
               aria-label='Berling, Germany'
@@ -34,8 +34,8 @@ const WeatherInfo = ({ location }: { location: { name: string } }) => {
               alt='temperature-icon'
               className='w-[7.5rem] h-[7.5rem]'
             />
-            <p className='font-dm-sans font-semibold italic leading-none -tracking-[2px] xl:text-8xl lg:text-6xl text-5xl'>
-              {weatherData?.current.temperature} {weatherData?.currentUnits.temperature}
+            <p className='font-dm-sans font-semibold italic leading-none -tracking-[2px] text-8xl whitespace-nowrap'>
+              {weatherData?.current.temperature} {weatherData?.currentUnits.temperature[0]}
             </p>
           </div>
         </div>

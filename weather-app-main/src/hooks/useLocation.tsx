@@ -64,7 +64,7 @@ export const useLocation = () => {
     })
   }
 
-  const getGeoLocation = useCallback(() => {
+  const getGeoLocation = useCallback(async () => {
     if (!('geolocation' in navigator)) {
       const errorMessage = 'Geolocation is not supported. Using default location.'
       console.warn(errorMessage)
@@ -76,7 +76,25 @@ export const useLocation = () => {
     }
 
     try {
-      navigator.geolocation.getCurrentPosition(successGeoLocation, errorGeoLocation, options)
+      const navigationPermissionStatus = await navigator.permissions.query({ name: 'geolocation' })
+      console.log('Geolocation permission state:', navigationPermissionStatus.state)
+      if (navigationPermissionStatus.state === 'denied') {
+        const previousLocation = localStorage.getItem('location')
+        if (previousLocation) {
+          setGeoLocation({
+            location: {
+              latitude: previousLocation.split('-')[0] as unknown as number,
+              longitude: previousLocation.split('-')[1] as unknown as number,
+            },
+          })
+        } else {
+          throw new Error(
+            'Location permission was denied. Please enable location access from site settings!'
+          )
+        }
+      } else {
+        navigator.geolocation.getCurrentPosition(successGeoLocation, errorGeoLocation, options)
+      }
     } catch (error) {
       console.error('Error checking geolocation permission:', error)
       setGeoLocation((prev) => ({

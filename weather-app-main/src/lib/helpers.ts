@@ -185,7 +185,10 @@ export const getSearchLocationData = async (term: string) => {
 
 export const getGeolocationName = async (location: Location) => {
   const stringifiedLocation = `${location.latitude}-${location.longitude}`
-  if (localStorage.getItem('location') === stringifiedLocation) {
+  if (
+    localStorage.getItem('location') === stringifiedLocation &&
+    localStorage.getItem('locationName') !== undefined
+  ) {
     return localStorage.getItem('locationName') ?? ''
   }
 
@@ -203,8 +206,9 @@ export const getGeolocationName = async (location: Location) => {
     }
 
     const data = await response.json()
-    const { village, town, country } = data.address
-    const locationName = `${village ?? town}, ${country}`
+    const { display_name } = data
+    const { village, town, country, county } = data.address
+    const locationName = `${display_name ? display_name.split(',')[0] : (village ?? town ?? county)}, ${country}`
 
     localStorage.setItem('location', stringifiedLocation)
     localStorage.setItem('locationName', locationName)

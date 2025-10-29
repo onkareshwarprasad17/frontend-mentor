@@ -6,6 +6,7 @@ This is a solution to the [Social links profile challenge on Frontend Mentor](ht
 
 - [Overview](#overview)
   - [The challenge](#the-challenge)
+  - [Links](#links)
 - [My process](#my-process)
   - [Built with](#built-with)
   - [What I learned](#what-i-learned)
@@ -22,6 +23,11 @@ Users should be able to:
 
 - ✅ See hover and focus states for all interactive elements on the page
 - ✅ Writing semantic HTML based on the content
+
+### Links
+
+- Solution URL: [GitHub](https://github.com/onkareshwarprasad17/frontend-mentor/tree/main/social-links-profile-main)
+- Live site: [Live](https://social-links-profile-main-nu-lyart.vercel.app/)
 
 ## My process
 

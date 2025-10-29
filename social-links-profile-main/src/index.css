@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-height: 100vh;
+
+  background-color: var(--grey-900);
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-optical-sizing: auto;
+  color: var(--white);
+}

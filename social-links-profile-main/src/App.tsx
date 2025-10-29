@@ -10,9 +10,9 @@ function App() {
             className="profile-image"
             alt="Profile Image"
           />
-          <h2 className="profile-name" aria-label="Profile Name">
+          <h1 className="profile-name" aria-label="Profile Name">
             Onkareshwar Prasad
-          </h2>
+          </h1>
           <p className="profile-location" aria-label="Profile Location">
             Chennai, India
           </p>

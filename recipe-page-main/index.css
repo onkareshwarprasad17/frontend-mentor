@@ -26486,8 +26486,51 @@ has-background-stone-600.is-hoverable:active {
   pointer-events: all !important;
 }
 
-.recipe-page {
-  max-width: 740px;
+.recipe-page .recipe-hero {
+  padding-bottom: 2rem;
+}
+.recipe-page article {
+  gap: 32px;
+}
+.recipe-page article aside {
+  border-radius: 1.25rem;
+}
+.recipe-page article aside ::marker {
+  color: hsl(332, 51%, 32%);
+}
+.recipe-page ::marker {
+  color: hsl(14, 45%, 36%);
+  font-weight: bold;
+}
+.recipe-page hr {
+  margin: 0;
+}
+.recipe-page table th {
+  font-weight: 400 !important;
+}
+.recipe-page table td {
+  color: hsl(14, 45%, 36%) !important;
+  font-weight: 600;
+}
+
+@media only screen and (min-width: 768px) {
+  body {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  .recipe-page {
+    max-width: 740px;
+    border-radius: 1.25rem;
+  }
+  .recipe-hero {
+    padding: 3rem;
+  }
+  .recipe-hero img {
+    border-radius: var(--bulma-radius-large);
+  }
+  article.content .title {
+    letter-spacing: 0.1rem;
+  }
 }
 
 /*# sourceMappingURL=index.css.map */

@@ -47,5 +47,64 @@ $custom-colors: (
 @use "bulma/bulma";
 
 .recipe-page {
-  max-width: 740px;
+  .recipe-hero {
+    padding-bottom: 2rem;
+  }
+
+  article {
+    gap: 32px;
+
+    aside {
+      border-radius: 1.25rem;
+
+      ::marker {
+        color: $rose;
+      }
+    }
+  }
+
+  ::marker {
+    color: $brown;
+    font-weight: bold;
+  }
+
+  hr {
+    margin: 0;
+  }
+
+  table {
+    th {
+      font-weight: 400 !important;
+    }
+
+    td {
+      color: $brown !important;
+      font-weight: 600;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  body {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .recipe-page {
+    max-width: 740px;
+    border-radius: 1.25rem;
+  }
+
+  .recipe-hero {
+    padding: 3rem;
+    img {
+      border-radius: var(--bulma-radius-large);
+    }
+  }
+
+  article.content {
+    .title {
+      letter-spacing: 0.1rem;
+    }
+  }
 }

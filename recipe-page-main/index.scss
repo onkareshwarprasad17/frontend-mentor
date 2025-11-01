@@ -1,0 +1,20 @@
+$white: hsl(0, 0%, 100%);
+$black-00: hsl(30, 54%, 90%);
+$black-15: hsl(30, 18%, 87%);
+$black-60: hsl(30, 10%, 34%);
+$black-90: hsl(24, 5%, 18%);
+
+$brown-800: hsl(14, 45%, 36%);
+
+$rose-800: hsl(332, 51%, 32%);
+$rose-50: hsl(330, 100%, 98%);
+
+@use "bulma/sass" with (
+  $family-primary: '"Young Serif", sans-serif',
+  $family-secondary: '"Outfit", sans-serif',
+  $size-5: 16px
+);
+
+:root {
+  margin: 5rem auto;
+}

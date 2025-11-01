@@ -1,23 +1,23 @@
-// Modern Bulma/Sass module integration using `@use`
-// Define project-level variables
-@use "sass:map";
-
-// Bring Bulma helper functions into scope so we can compute inverted/light/dark shades
-@use "bulma/sass/utilities/functions" as fn;
-
-$white: hsl(0, 0%, 100%);
-$turquoise: hsl(31, 53%, 90%) !default;
+$primary: hsl(31, 53%, 90%);
 $black: hsl(24, 5%, 18%);
-
+$white: hsl(0, 0%, 100%);
 $family-sans-serif: "Outfit", sans-serif;
 $family-primary: "Young Serif", serif;
+
+// overriding Bulma initial variables for colors
+@use "bulma/sass/utilities/initial-variables" with (
+  $turquoise: $primary,
+  $black: $black,
+  $white: $white
+);
+
+@use "bulma/sass/utilities/functions" as fn;
 
 // custom colors
 $stone-150: hsl(30, 18%, 87%);
 $stone-600: hsl(32, 10%, 34%);
 $brown: hsl(14, 45%, 36%);
 $rose: hsl(332, 51%, 32%);
-// Compute the inverted color using Bulma's helper (returns #fff or rgba(#000, 0.7))
 $rose-invert: fn.bulmaFindColorInvert($rose);
 $rose-light: hsl(330, 100%, 98%);
 $rose-light-invert: fn.bulmaFindColorInvert($rose-light);
@@ -37,10 +37,10 @@ $custom-colors: (
   "stone-600": $stone-600,
 );
 
-// Configure Bulma's derived variables with our custom colors before loading Bulma
-// Configure Bulma's derived-variables with our custom colors map
 @use "bulma/sass/utilities/derived-variables" with (
-  $custom-colors: $custom-colors
+  $custom-colors: $custom-colors,
+  $family-secondary: $family-primary,
+  $family-primary: $family-sans-serif
 );
 
 // Load the full Bulma module (it will reuse the configured derived-variables module)

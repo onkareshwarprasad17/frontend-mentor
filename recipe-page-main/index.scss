@@ -46,6 +46,10 @@ $custom-colors: (
 // Load the full Bulma module (it will reuse the configured derived-variables module)
 @use "bulma/bulma";
 
+body {
+  min-height: 100vh;
+}
+
 .recipe-page {
   .recipe-hero {
     padding-bottom: 2rem;

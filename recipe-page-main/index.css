@@ -26486,6 +26486,10 @@ has-background-stone-600.is-hoverable:active {
   pointer-events: all !important;
 }
 
+body {
+  min-height: 100vh;
+}
+
 .recipe-page .recipe-hero {
   padding-bottom: 2rem;
 }

@@ -2,25 +2,47 @@
 
 ![Design preview for the Recipe page coding challenge](./preview.jpg)
 
-## Welcome! 👋
+## Table of contents
 
-Thanks for checking out this front-end coding challenge.
+- [Overview](#overview)
+  - [The challenge](#the-challenge)
+  - [Links](#links)
+- [My process](#my-process)
+  - [Built with](#built-with)
+  - [What I learned](#what-i-learned)
+  - [Continued development](#continued-development)
+  - [Useful resources](#useful-resources)
+- [Author](#author)
+- [Acknowledgments](#acknowledgments)
 
-[Frontend Mentor](https://www.frontendmentor.io) challenges help you improve your coding skills by building realistic projects.
+## Overview
 
-**To do this challenge, you need a basic understanding of HTML and CSS.**
+### The challenge
 
-## The challenge
+Build out the recipe page to match the provided design as closely as possible. This project demonstrates responsive layout, semantic HTML, and usage of Bulma with custom Sass for theming.
 
-Your challenge is to build out this recipe page and get it looking as close to the design as possible.
+### Links
 
-You can use any tools you like to help you complete the challenge. So if you've got something you'd like to practice, feel free to give it a go.
+- Solution URL: [GitHub Repo](https://github.com/onkareshwarprasad17/frontend-mentor/tree/main/recipe-page-main)
+- Live Site URL: [Live](https://recipe-page-main-psi-sooty.vercel.app/)
 
-Want some support on the challenge? [Join our community](https://www.frontendmentor.io/community) and ask questions in the **#help** channel.
+## My process
 
-## Adding custom colors (Bulma)
+### Built with
 
-This project uses Bulma and the modern Sass `@use` pattern to register custom colors. To add a new color (for example, `mint`), edit `index.scss` and add your color variables and a `$custom-colors` entry before Bulma is loaded. Example:
+- Semantic HTML5
+- SCSS with Bulma
+- Bulma helpers and custom color map
+- Mobile-first responsive layout (Flexbox)
+
+### What I learned
+
+I experimented with Bulma's Sass module system (`@use`) and adding custom theme colors. Key takeaways:
+
+- Bulma's modern Sass modules scope variables: to add custom colors you must provide a `$custom-colors` map before Bulma's `derived-variables` are loaded so Bulma can generate helper classes like `.has-background-<name>` and `.has-text-<name>`.
+- Keep `@use` rules at the top of your SCSS file. Configure `initial-variables` and `derived-variables` before importing `bulma/bulma`.
+
+Adding custom colors (Bulma) — example
 
 ```scss
 // define the color values
@@ -35,14 +57,32 @@ $custom-colors: (
   ),
 );
 
-// then configure Bulma's derived-variables with the map
+// configure derived variables with our custom map
 @use "bulma/sass/utilities/derived-variables" with (
   $custom-colors: $custom-colors
 );
 
+// then load Bulma
 @use "bulma/bulma";
 ```
 
-After rebuilding your Sass (for example `npm run build-bulma`), Bulma will automatically generate helper classes such as `.has-text-mint`, `.has-background-mint`, and shaded variants like `.has-text-mint-05`.
+After rebuilding your Sass (for example `npm run build-bulma`) Bulma will generate helpers like `.has-text-mint` and `.has-background-mint`.
 
-If you'd rather keep using `@import`, ensure your `$custom-colors` variable is defined before importing Bulma's `derived-variables` so the helpers are generated.
+### Continued development
+
+- Tidy up and document the preferred `@use` order in `index.scss`.
+- Improve accessibility features and keyboard navigation.
+
+### Useful resources
+
+- Bulma documentation — https://bulma.io/documentation/
+- Sass modules (`@use`/`@forward`) — https://sass-lang.com/documentation/at-rules/use
+
+## Author
+
+- Frontend Mentor: [@onkareshwarprasad17](https://www.frontendmentor.io/profile/onkareshwarprasad17)
+- GitHub: [onkareshwarprasad17](https://github.com/onkareshwarprasad17)
+
+## Acknowledgments
+
+Thanks to Frontend Mentor for the challenge and Bulma's maintainers for a great CSS toolkit.

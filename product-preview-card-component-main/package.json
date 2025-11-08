@@ -1,7 +1,6 @@
 {
   "scripts": {
-    "build-stylus": "stylus -w --compress index.styl",
-    "build": "pnpm run build-stylus"
+    "build:stylus": "stylus -w --compress index.styl"
   },
   "dependencies": {
     "stylus": "^0.64.0"

@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "build:stylus": "stylus -w --compress index.styl"
+  },
+  "dependencies": {
+    "stylus": "^0.64.0"
+  }
+}
